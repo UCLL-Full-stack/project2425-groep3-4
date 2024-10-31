@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { Product } from '../../model/product';
-import { Inventory } from '../../model/inventory';
+import { Product } from '../../model/Product';
+import { Inventory } from '../../model/Inventory';
 
 export class PrismaInventoryRepository {
     private prisma: PrismaClient;

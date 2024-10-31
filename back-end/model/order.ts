@@ -1,5 +1,5 @@
-import { Product } from './product';
-import { User } from './user';
+import { Product } from './Product';
+import { User } from './User';
 
 export class Order {
     private orderId: number;

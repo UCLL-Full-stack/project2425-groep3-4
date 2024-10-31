@@ -1,6 +1,6 @@
 // inventory.db.ts
-import { Inventory } from "../../model/inventory";
-import { Product } from "../../model/product";
+import { Inventory } from "../../model/Inventory";
+import { Product } from "../../model/Product";
 
 export class InventoryRepository {
     private inventories: Inventory[] = [

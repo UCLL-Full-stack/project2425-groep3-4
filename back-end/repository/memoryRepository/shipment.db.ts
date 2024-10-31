@@ -1,5 +1,5 @@
-import { Shipment } from '../../model/shipment';
-import { Order } from '../../model/order';
+import { Shipment } from '../../model/Shipment';
+import { Order } from '../../model/Order';
 
 export class ShipmentRepository {
     private shipments: Shipment[] = []; 

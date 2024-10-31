@@ -1,7 +1,7 @@
 // order.db.ts
-import { Order } from '../../model/order';
-import { User } from '../../model/user';
-import { Product } from '../../model/product';
+import { Order } from '../../model/Order';
+import { User } from '../../model/User';
+import { Product } from '../../model/Product';
 
 export class OrderRepository {
     private orders: Order[] = [];

@@ -1,5 +1,5 @@
 // orderDetails.db.ts
-import { OrderDetail } from '../../model/orderDetail';
+import { OrderDetail } from '../../model/OrderDetail';
 
 export class OrderDetailRepository {
     private orderDetails: OrderDetail[] = []; 

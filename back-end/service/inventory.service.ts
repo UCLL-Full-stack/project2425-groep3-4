@@ -1,7 +1,7 @@
 // inventory.service.ts
-import { InventoryRepository } from '../repository/inventory.db';
-import { Product } from '../model/product';
-import { Inventory } from '../model/inventory';
+import { InventoryRepository } from '../repository/Inventory.db';
+import { Product } from '../model/Product';
+import { Inventory } from '../model/Inventory';
 
 export class InventoryService {
     private inventoryRepository: InventoryRepository;

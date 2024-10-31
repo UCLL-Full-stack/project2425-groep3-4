@@ -1,4 +1,4 @@
-import { User } from '../user';
+import { User } from '../User';
 
 export class Magazijnmedewerker extends User {
     constructor(userId: number, username: string, password: string) {
