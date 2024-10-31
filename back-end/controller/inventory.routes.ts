@@ -54,15 +54,21 @@ router.post('/inventory', async (req, res) => {
  *     responses:
  *       200:
  *         description: List of all inventories
+ *       500:
+ *         description: Internal server error
  */
 router.get('/inventory', async (req, res) => {
-    const inventories = await inventoryService.getAllInventories();
-    res.json(inventories);
+    try {
+        const inventories = await inventoryService.getAllInventories();
+        res.json({ status: 'success', data: inventories });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: 'Internal server error' });
+    }
 });
 
 /**
  * @swagger
- * /api/inventory:/update:
+ * /api/inventory/update:
  *   patch:
  *     summary: Update inventory quantity
  *     tags: [Inventory]
@@ -95,7 +101,7 @@ router.patch('/inventory/update', async (req, res) => {
 
 /**
  * @swagger
- * /api/inventory:/{productId}:
+ * /api/inventory/{productId}:
  *   get:
  *     summary: Find inventory by product
  *     tags: [Inventory]
@@ -113,14 +119,18 @@ router.patch('/inventory/update', async (req, res) => {
  *         description: Inventory not found
  */
 router.get('/inventory/:productId', async (req, res) => {
-    const productId = parseInt(req.params.productId);
-    const product = new Product(productId, 'Sample Product', 'Sample Description', '0'); 
-    const inventory = await inventoryService.findInventoryByProduct(product);
+    try {
+        const productId = parseInt(req.params.productId);
+        const product = new Product(productId, 'Sample Product', 'Sample Description', '0'); 
+        const inventory = await inventoryService.findInventoryByProduct(product);
 
-    if (inventory) {
-        res.json(inventory);
-    } else {
-        res.status(404).json({ message: 'Inventory not found' });
+        if (inventory) {
+            res.json({ status: 'success', data: inventory });
+        } else {
+            res.status(404).json({ status: 'error', message: 'Inventory not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: 'Internal server error' });
     }
 });
 
