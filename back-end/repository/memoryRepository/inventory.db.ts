@@ -1,10 +1,13 @@
 // inventory.db.ts
-import { Inventory } from "../model/inventory";
-import { Product } from "../model/product";
+import { Inventory } from "../../model/inventory";
+import { Product } from "../../model/product";
 
 export class InventoryRepository {
-    private inventories: Inventory[] = []; 
-
+    private inventories: Inventory[] = [
+        new Inventory(new Product(1, 'Product A', 'Description A', 'Location A1'), 100),
+        new Inventory(new Product(2, 'Product B', 'Description B', 'Location B1'), 50),
+        new Inventory(new Product(3, 'Product C', 'Description C', 'Location C2'), 200),
+    ];
 
     public async addInventory(product: Product, quantity: number): Promise<Inventory> {
         const inventory = new Inventory(product, quantity);
