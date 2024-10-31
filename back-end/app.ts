@@ -7,6 +7,11 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 import inventoryRoutes from './controller/inventory.routes';
+import orderRoutes from './controller/order.routes';
+import orderDetailRoutes from './controller/orderDetail.routes';
+import productRoutes from './controller/product.routes';
+import shipmentRoutes from './controller/shipment.routes';
+import userRoutes from './controller/user.routes';
 
 const app = express();
 dotenv.config();
@@ -38,6 +43,11 @@ app.get('/status', (req, res) => {
 
 // Integrate inventory routes
 app.use('/api', inventoryRoutes);
+app.use('/api', orderRoutes);
+app.use('/api', orderDetailRoutes);
+app.use('/api', productRoutes);
+app.use('/api', shipmentRoutes);
+app.use('/api', userRoutes);        // Check completed
 
 app.listen(port, () => {
     console.log(`Back-end is running on port ${port}.`);
