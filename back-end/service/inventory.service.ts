@@ -1,15 +1,21 @@
 // inventory.service.ts
-import { InventoryRepository } from '../repository/inventory.db';
 import { Product } from '../model/product';
 import { Inventory } from '../model/inventory';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class InventoryService {
-    private inventoryRepository: InventoryRepository;
+    private inventoryRepository: any;
 
     constructor() {
-        this.inventoryRepository = new InventoryRepository();
+        if (process.env.NODE_ENV === 'local') {
+            this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
+        } else if (process.env.NODE_ENV === 'dev') {
+            this.inventoryRepository = new (require('../repository/prosmaRepository/inventory.db').InventoryRepository)();
+        } else {
+            this.inventoryRepository = new (require('../repository/prosmaRepository/inventory.db').InventoryRepository)();
+        }
     }
-
     public async addInventory(product: Product, quantity: number): Promise<Inventory> {
         return await this.inventoryRepository.addInventory(product, quantity);
     }
