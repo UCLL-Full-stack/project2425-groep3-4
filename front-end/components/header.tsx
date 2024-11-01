@@ -14,6 +14,10 @@ const Header: React.FC = () => {
           Home
         </Link>
 
+        <Link href="/products" className="nav-link px-4 fs-5 text-white">
+          Product
+        </Link>
+
         <Link href="/inventories" className="nav-link px-4 fs-5 text-white">
           Inventory
         </Link>
@@ -22,13 +26,9 @@ const Header: React.FC = () => {
           Order
         </Link>
 
-        <Link href="/products" className="nav-link px-4 fs-5 text-white">
-          Product
-        </Link>
-
-        <Link href="/users" className="nav-link px-4 fs-5 text-white">
+        {/* <Link href="/users" className="nav-link px-4 fs-5 text-white">
           User Manangement
-        </Link>
+        </Link> */}
       </nav>
 
     </header>

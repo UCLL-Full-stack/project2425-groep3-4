@@ -8,7 +8,7 @@ const Home: React.FC = () => {
     <>
       <Head>
         <title>Simple WMS</title>
-        <meta name="description" content="Courses app" />
+        <meta name="description" content="Simple WMS" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/images/wms.png" />
       </Head>
