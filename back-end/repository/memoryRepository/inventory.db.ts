@@ -17,8 +17,9 @@ export class InventoryRepository {
 
 
     public async findInventoryByProduct(product: Product): Promise<Inventory | undefined> {
-        return this.inventories.find((inventory) => inventory.getProduct() === product);
+        return this.inventories.find((inventory) => inventory.getProduct().getProductId() === product.getProductId());
     }
+    
 
 
     public async updateInventoryQuantity(product: Product, quantity: number): Promise<void> {
