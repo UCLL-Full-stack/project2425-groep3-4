@@ -4,7 +4,11 @@ import { User } from '../../model/user';
 import { Product } from '../../model/product';
 
 export class OrderRepository {
-    private orders: Order[] = [];
+    private orders: Order[] = [
+        new Order(1, new User(1, 'johan', 'password123', 'admin'), [new Product(1, 'Product A', 'Description A', 'Location A')], 'Pending', new Date('2023-01-01')),
+        new Order(2, new User(2, 'rijesh', 'password123', 'manager'), [new Product(2, 'Product B', 'Description B', 'Location B')], 'Shipped', new Date('2023-02-01')),
+        new Order(3, new User(3, 'bingshen', 'password123', 'user'), [new Product(3, 'Product C', 'Description C', 'Location C')], 'Delivered', new Date('2023-03-01')),
+    ];
 
     public async createOrder(order: Order): Promise<Order> {
         this.orders.push(order);

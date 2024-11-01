@@ -1,14 +1,21 @@
 // orderDetails.service.ts
 import { OrderDetailRepository } from '../repository/memoryRepository/orderDetail.db';
 import { OrderDetail } from '../model/orderDetail';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class OrderDetailService {
-    private orderDetailRepository: OrderDetailRepository;
+    private orderDetailRepository: any;
 
     constructor() {
-        this.orderDetailRepository = new OrderDetailRepository();
+        if (process.env.NODE_ENV === 'local') {
+            this.orderDetailRepository = new (require('../repository/memoryRepository/orderDetail.db').OrderDetailRepository)();
+        } else if (process.env.NODE_ENV === 'dev') {
+            this.orderDetailRepository = new (require('../repository/prismaRepository/orderDetail.db').OrderDetailRepository)();
+        } else {
+            this.orderDetailRepository = new (require('../repository/memoryRepository/orderDetail.db').OrderDetailRepository)();
+        }
     }
-
     public async addOrderDetail(orderDetail: OrderDetail): Promise<OrderDetail> {
         return await this.orderDetailRepository.addOrderDetail(orderDetail);
     }

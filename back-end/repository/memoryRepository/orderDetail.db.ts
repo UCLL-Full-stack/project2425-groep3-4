@@ -2,7 +2,12 @@
 import { OrderDetail } from '../../model/orderDetail';
 
 export class OrderDetailRepository {
-    private orderDetails: OrderDetail[] = []; 
+    private orderDetails: OrderDetail[] = [
+        new OrderDetail(1, 101, 2), 
+        new OrderDetail(1, 102, 1), 
+        new OrderDetail(2, 103, 5), 
+        new OrderDetail(3, 101, 3)  
+    ];
 
     public async addOrderDetail(orderDetail: OrderDetail): Promise<OrderDetail> {
         this.orderDetails.push(orderDetail);

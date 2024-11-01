@@ -3,12 +3,17 @@ import { Shipment } from '../model/shipment';
 import { Order } from '../model/order';
 
 export class ShipmentService {
-    private shipmentRepository: ShipmentRepository;
+    private shipmentRepository: any;
 
     constructor() {
-        this.shipmentRepository = new ShipmentRepository();
+        if (process.env.NODE_ENV === 'local') {
+            this.shipmentRepository = new (require('../repository/memoryRepository/shipment.db').ShipmentRepository)();
+        } else if (process.env.NODE_ENV === 'dev') {
+            this.shipmentRepository = new (require('../repository/prismaRepository/shipment.db').ShipmentRepository)();
+        } else {
+            this.shipmentRepository = new (require('../repository/memoryRepository/shipment.db').ShipmentRepository)();
+        }
     }
-
     public async addShipment(shipment: Shipment): Promise<Shipment> {
         return await this.shipmentRepository.addShipment(shipment);
     }

@@ -11,9 +11,9 @@ export class InventoryService {
         if (process.env.NODE_ENV === 'local') {
             this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
         } else if (process.env.NODE_ENV === 'dev') {
-            this.inventoryRepository = new (require('../repository/prosmaRepository/inventory.db').InventoryRepository)();
+            this.inventoryRepository = new (require('../repository/prismaRepository/inventory.db').InventoryRepository)();
         } else {
-            this.inventoryRepository = new (require('../repository/prosmaRepository/inventory.db').InventoryRepository)();
+            this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
         }
     }
     public async addInventory(product: Product, quantity: number): Promise<Inventory> {

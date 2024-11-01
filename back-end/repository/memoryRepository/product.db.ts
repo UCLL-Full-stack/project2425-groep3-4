@@ -1,7 +1,11 @@
 import { Product } from '../../model/product';
 
 export class ProductRepository {
-    private products: Product[] = [];
+    private products: Product[] = [
+        new Product(1, 'Product A', 'Description A', 'Location A'),
+        new Product(2, 'Product B', 'Description B', 'Location B'),
+        new Product(3, 'Product C', 'Description C', 'Location C'),
+    ];
 
     public async addProduct(product: Product): Promise<Product> {
         this.products.push(product);

@@ -1,9 +1,14 @@
 import { Shipment } from '../../model/shipment';
 import { Order } from '../../model/order';
+import { User } from '../../model/user';
 
 export class ShipmentRepository {
-    private shipments: Shipment[] = []; 
-
+    private shipments: Shipment[] = [
+        new Shipment(1, new Order(1, new User(1, 'johan', 'password123', 'admin'), [], 'Pending', new Date('2023-01-01')), 'Shipped', new Date('2023-01-10')),
+        new Shipment(2, new Order(2, new User(2, 'rijesh', 'password123', 'manager'), [], 'Shipped', new Date('2023-02-01')), 'In Transit', new Date('2023-02-12')),
+        new Shipment(3, new Order(3, new User(3, 'bingshen', 'password123', 'user'), [], 'Delivered', new Date('2023-03-01')), 'Delivered', new Date('2023-03-15')),
+    ];
+    
     public async addShipment(shipment: Shipment): Promise<Shipment> {
         this.shipments.push(shipment);
         return shipment;

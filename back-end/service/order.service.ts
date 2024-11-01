@@ -3,12 +3,20 @@ import { OrderRepository } from '../repository/memoryRepository/order.db';
 import { Order } from '../model/order';
 import { User } from '../model/user';
 import { Product } from '../model/product';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class OrderService {
-    private orderRepository: OrderRepository;
+    private orderRepository: any;
 
     constructor() {
-        this.orderRepository = new OrderRepository();
+        if (process.env.NODE_ENV === 'local') {
+            this.orderRepository = new (require('../repository/memoryRepository/order.db').OrderRepository)();
+        } else if (process.env.NODE_ENV === 'dev') {
+            this.orderRepository = new (require('../repository/prismaRepository/order.db').OrderRepository)();
+        } else {
+            this.orderRepository = new (require('../repository/memoryRepository/order.db').OrderRepository)();
+        }
     }
 
     public async createOrder(order: Order): Promise<Order> {

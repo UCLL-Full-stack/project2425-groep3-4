@@ -8,9 +8,9 @@ export class UserService {
         if (process.env.NODE_ENV === 'local') {
             this.userRepository = new (require('../repository/memoryRepository/user.db').UserRepository)();
         } else if (process.env.NODE_ENV === 'dev') {
-            this.userRepository = new (require('../repository/prosmaRepository/user.db').UserRepository)();
+            this.userRepository = new (require('../repository/prismaRepository/user.db').UserRepository)();
         } else {
-            this.userRepository = new (require('../repository/prosmaRepository/user.db').UserRepository)();
+            this.userRepository = new (require('../repository/memoryRepository/user.db').UserRepository)();
         }
     }
 
