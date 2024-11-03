@@ -18,7 +18,7 @@ const Header: React.FC = () => {
           Product
         </Link>
 
-        <Link href="/inventories" className="nav-link px-4 fs-5 text-white">
+        {/* <Link href="/inventories" className="nav-link px-4 fs-5 text-white">
           Inventory
         </Link>
 
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
           Order
         </Link>
 
-        {/* <Link href="/users" className="nav-link px-4 fs-5 text-white">
+        <Link href="/users" className="nav-link px-4 fs-5 text-white">
           User Manangement
         </Link> */}
       </nav>

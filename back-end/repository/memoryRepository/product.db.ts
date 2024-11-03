@@ -5,6 +5,7 @@ export class ProductRepository {
         new Product(1, 'Product A', 'Description A', 'Location A'),
         new Product(2, 'Product B', 'Description B', 'Location B'),
         new Product(3, 'Product C', 'Description C', 'Location C'),
+        new Product(4, 'Product D', 'Description D', 'Location D'),
     ];
 
     public async addProduct(product: Product): Promise<Product> {

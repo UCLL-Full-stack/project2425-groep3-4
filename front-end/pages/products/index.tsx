@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import Header from '@components/header';
-import styles from '@styles/home.module.css';
+import Footer from '@components/footer';
 import PruductOverviewTable from '@components/products/ProductOverviewTable';
+
 const Home: React.FC = () => {
   return (
     <>
@@ -19,6 +19,7 @@ const Home: React.FC = () => {
           <PruductOverviewTable/>
         </section>
       </main>
+      <Footer />
     </>
   );
 };

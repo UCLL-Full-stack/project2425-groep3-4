@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Header from '@components/header';
+import Footer from '@components/footer';
 import InventoryOverviewTable from '@components/inventories/InventoryOverviewTable';
 
 const Home: React.FC = () => {
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
           <InventoryOverviewTable />
         </section>
       </main>
+      <Footer />
     </>
   );
 };

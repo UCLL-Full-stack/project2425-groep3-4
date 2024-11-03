@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Header from '@components/header';
+import Footer from '@components/footer';
 import styles from '@styles/home.module.css';
 
 const Home: React.FC = () => {
@@ -33,6 +34,7 @@ const Home: React.FC = () => {
           </p>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

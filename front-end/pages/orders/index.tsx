@@ -1,7 +1,6 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import Header from '@components/header';
-import styles from '@styles/home.module.css';
+import Footer from '@components/footer';
 import OrderOverviewTable from '@components/orders/OrderOverviewTable';
 
 const Home: React.FC = () => {
@@ -20,6 +19,7 @@ const Home: React.FC = () => {
           <OrderOverviewTable/>
         </section>
       </main>
+      <Footer />
     </>
   );
 };

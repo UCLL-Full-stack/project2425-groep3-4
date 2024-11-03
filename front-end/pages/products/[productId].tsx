@@ -5,6 +5,7 @@ import { ProductService } from '../../services/ProductService';
 import ProductDetail from '@components/products/ProductDetail';
 import Head from 'next/head';
 import Header from '@components/header';
+import Footer from '@components/footer';
 
 const ProductDetailPage: React.FC = () => {
   const router = useRouter();
@@ -56,11 +57,12 @@ const ProductDetailPage: React.FC = () => {
       </Head>
       <Header />
       <main className="d-flex flex-column justify-content-center align-items-center">
-        <h1>Pruduct</h1>
+        <h1>Pruduct Detail</h1>
         <section>
-        <ProductDetail product={product} />
+          <ProductDetail product={product} />
         </section>
       </main>
+      <Footer />
     </>
   );
 };

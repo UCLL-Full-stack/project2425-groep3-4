@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ProductService } from '@services/ProductService';
 import { Product } from '@types';
+import Link from 'next/link';
 
 type Props = {
   product: Product;
@@ -19,7 +20,7 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
       try {
         await productService.deleteProduct(product.productId);
         alert('Product deleted successfully');
-        router.push('/');
+        router.push('/products');
       } catch (err) {
         console.error('Failed to delete product:', err);
         alert('Failed to delete product');
@@ -42,53 +43,49 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
   };
 
   return (
-    <div>
-      <h1>Product Details</h1>
-      <p><strong>Product ID:</strong> {product.productId}</p>
-      <p><strong>Name:</strong> {product.name}</p>
-      <p><strong>Description:</strong> {product.description}</p>
-      <p><strong>Location:</strong> {product.location}</p>
-
-      <div>
-        <h2>Update Product</h2>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={updatedProduct.name ?? product.name}
-            onChange={(e) => setUpdatedProduct({ ...updatedProduct, name: e.target.value })}
-          />
-        </label>
-        <br />
-        <br />
-        <label>
-          Description:
-          <input
-            type="text"
-            value={updatedProduct.description ?? product.description}
-            onChange={(e) => setUpdatedProduct({ ...updatedProduct, description: e.target.value })}
-          />
-        </label>
-        <br />
-        <br />
-        <label>
-          Location:
-          <input
-            type="text"
-            value={updatedProduct.location ?? product.location}
-            onChange={(e) => setUpdatedProduct({ ...updatedProduct, location: e.target.value })}
-          />
-        </label>
-        <br />
-        <br />
-        <button onClick={handleUpdate} disabled={isUpdating}>
-          {isUpdating ? 'Updating...' : 'Update'}
-        </button>
+    <div className="container mt-4">
+      <div className="card mb-4">
+        <div className="card-body">
+          <h5 className="card-title">Product Information</h5>
+          <p><strong>Product ID:</strong> {product.productId}</p>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Name:</label>
+            <input
+              type="text"
+              className="form-control"
+              value={updatedProduct.name ?? product.name}
+              onChange={(e) => setUpdatedProduct({ ...updatedProduct, name: e.target.value })}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Description:</label>
+            <input
+              type="text"
+              className="form-control"
+              value={updatedProduct.description ?? product.description}
+              onChange={(e) => setUpdatedProduct({ ...updatedProduct, description: e.target.value })}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Location:</label>
+            <input
+              type="text"
+              className="form-control"
+              value={updatedProduct.location ?? product.location}
+              onChange={(e) => setUpdatedProduct({ ...updatedProduct, location: e.target.value })}
+            />
+          </div>
+          <button className="btn btn-primary me-2" onClick={handleUpdate} disabled={isUpdating}>
+            {isUpdating ? 'Updating...' : 'Update'}
+          </button>
+          <button className="btn btn-danger" onClick={handleDelete}>
+            Delete Product
+          </button>
+        </div>
       </div>
-
-      <button onClick={handleDelete} style={{ marginTop: '20px', color: 'red' }}>
-        Delete Product
-      </button>
+      <Link href="/products" legacyBehavior>
+        <a className="btn btn-secondary mt-3">Back to Products</a>
+      </Link>
     </div>
   );
 };
