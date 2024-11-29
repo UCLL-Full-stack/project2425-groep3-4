@@ -1,11 +1,13 @@
+import { Product } from "./product";
+
 export class OrderDetail {
     readonly id: number;
-    readonly productId: number;
+    readonly productsId: Product;
     readonly quantity: number;
 
-    constructor(id: number, productId: number, quantity: number) {
+    constructor(id: number, productsId: Product, quantity: number) {
         this.id = id;
-        this.productId = productId;
+        this.productsId = productsId;
         this.quantity = quantity;
     }
 
@@ -13,8 +15,8 @@ export class OrderDetail {
         return this.id;
     }
 
-    public getProductId(): number {
-        return this.productId;
+    public getProductId(): Product {
+        return this.productsId;
     }
 
     public getQuantity(): number {

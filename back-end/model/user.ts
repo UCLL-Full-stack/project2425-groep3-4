@@ -1,15 +1,31 @@
+import { Order } from "./order";
+
 export class User {
     readonly id: number;
     readonly username: string;
     readonly password: string;
     readonly role: string;
+    readonly order: Order[];
 
-    constructor(id: number, username: string, password: string, role: string) {
+
+    constructor(user: {
+
+    }) {
+        this.validate(user);
+        
+
+    }
+
+
+    /*
+    constructor(id: number, username: string, password: string, role: string, order: Order[]) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
+        this.order = [];
     }
+        */
 
     public getId(): number | undefined {
         return this.id;
@@ -26,5 +42,15 @@ export class User {
     public getRole(): string {
         return this.role;
     }
+
+    public getOrder(): Order[] {
+        return this.order;
+    }
+
+    validate(user: {
+        username: string;
+        password: string;
+        role: 
+    })
 
 }

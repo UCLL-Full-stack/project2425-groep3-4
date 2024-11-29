@@ -8,34 +8,34 @@ datasource db {
 }
 
 model User {
-  id   Int     @id @default(autoincrement())
-  username String
-  password String
-  role     String
-  orders   Order[]
+  id           Int        @id @default(autoincrement())
+  username     String
+  password     String
+  role         String
+  orders       Order[] // One to Many relationship with order
 }
 
 model Product {
-  id    Int           @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String
   description  String
   location     String
   inventory    Inventory?
   orderDetails OrderDetail[]
-  Order        Order?        @relation(fields: [orderOrderId], references: [orderId])
+  Order        Order?     @relation(fields: [orderOrderId], references: [orderId])
   orderOrderId Int?
 }
 
 model Inventory {
-  id Int     @id @default(autoincrement())
-  product   Product @relation(fields: [productId], references: [productId])
-  quantity  Int
+  id           Int        @id @default(autoincrement())
+  product      Product    @relation(fields: [productId], references: [productId])
+  quantity     Int
 }
 
 model Order {
-  id      Int           @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   userId       Int
-  user         User          @relation(fields: [userId], references: [userId], name: "UserOrders")
+  user         User       @relation(fields: [userId], references: [userId], name: "UserOrders")
   products     Product[]
   status       String
   creationDate DateTime
@@ -44,18 +44,18 @@ model Order {
 }
 
 model OrderDetail {
-  id Int     @id @default(autoincrement())
-  orderId       Int
-  productId     Int
-  quantity      Int
-  order         Order   @relation(fields: [orderId], references: [orderId])
-  product       Product @relation(fields: [productId], references: [productId])
+  id           Int        @id @default(autoincrement())
+  orderId      Int
+  productId    Int
+  quantity     Int
+  order        Order      @relation(fields: [orderId], references: [orderId])
+  product      Product    @relation(fields: [productId], references: [productId])
 }
 
 model Shipment {
-  id  Int      @id @default(autoincrement())
-  orderId     Int
-  status      String
-  shippedDate DateTime
-  order       Order    @relation(fields: [orderId], references: [orderId])
+  id           Int        @id @default(autoincrement())
+  orderId      Int
+  status       String
+  shippedDate  DateTime
+  order        Order      @relation(fields: [orderId], references: [orderId])
 }

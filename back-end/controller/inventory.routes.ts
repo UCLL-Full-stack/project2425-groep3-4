@@ -9,7 +9,7 @@ const inventoryService = new InventoryService();
  * @swagger
  * tags:
  *   name: Inventory
- *   description: Inventory management API
+ *   description: Warehouse management API
  */
 
 /**
