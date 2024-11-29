@@ -51,3 +51,7 @@ export type User = {
     order: Order;
   };
   
+  export type StatusMessage = {
+    message: string;
+    type: "error" | "success"
+  };

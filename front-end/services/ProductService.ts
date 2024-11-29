@@ -29,6 +29,7 @@ export class ProductService {
     public async getAllProducts(): Promise<any> {
         try {
             const response = await fetch(`${API_URL}/api/products`);
+            
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }

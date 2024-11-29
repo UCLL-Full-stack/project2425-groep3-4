@@ -1,27 +1,25 @@
 import { Product } from './product';
 
 export class Inventory {
-    private product: Product;
-    private quantity: number;
+    readonly id: number;
+    readonly product: Product;
+    readonly quantity: number;
 
-    constructor(product: Product, quantity: number) {
+    constructor(id: number, product: Product, quantity: number) {
+        this.id = id;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public getProduct(): Product {
+    getId(): number | undefined {
+        return this.id;
+    }
+
+    getProduct(): Product {
         return this.product;
     }
 
-    public setProduct(product: Product): void {
-        this.product = product;
-    }
-
-    public getQuantity(): number {
+    getQuantity(): number {
         return this.quantity;
-    }
-
-    public setQuantity(quantity: number): void {
-        this.quantity = quantity;
     }
 }

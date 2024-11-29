@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  userId   Int     @id @default(autoincrement())
+  id   Int     @id @default(autoincrement())
   username String
   password String
   role     String
-  orders   Order[] @relation("UserOrders")
+  orders   Order[]
 }
 
 model Product {
-  productId    Int           @id @default(autoincrement())
+  id    Int           @id @default(autoincrement())
   name         String
   description  String
   location     String
@@ -27,13 +27,13 @@ model Product {
 }
 
 model Inventory {
-  productId Int     @id @default(autoincrement())
+  id Int     @id @default(autoincrement())
   product   Product @relation(fields: [productId], references: [productId])
   quantity  Int
 }
 
 model Order {
-  orderId      Int           @id @default(autoincrement())
+  id      Int           @id @default(autoincrement())
   userId       Int
   user         User          @relation(fields: [userId], references: [userId], name: "UserOrders")
   products     Product[]
@@ -44,7 +44,7 @@ model Order {
 }
 
 model OrderDetail {
-  orderDetailId Int     @id @default(autoincrement())
+  id Int     @id @default(autoincrement())
   orderId       Int
   productId     Int
   quantity      Int
@@ -53,7 +53,7 @@ model OrderDetail {
 }
 
 model Shipment {
-  shipmentId  Int      @id @default(autoincrement())
+  id  Int      @id @default(autoincrement())
   orderId     Int
   status      String
   shippedDate DateTime
