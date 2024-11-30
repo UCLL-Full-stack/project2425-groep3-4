@@ -2,9 +2,9 @@ import { Order } from './order';
 
 export class Shipment {
     readonly id: number;
-    readonly order: Order;
     readonly status: string;
     readonly shippedDate: Date;
+    readonly order: Order;
 
     constructor(shipmentId: number, order: Order, status: string, shippedDate: Date) {
         this.id = shipmentId;

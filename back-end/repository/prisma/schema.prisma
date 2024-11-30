@@ -12,7 +12,7 @@ model User {
   username     String
   password     String
   role         String
-  orders       Order[] // One to Many relationship with order
+  orders       Order[]    //One User can place many orders
 }
 
 model Product {
@@ -20,42 +20,43 @@ model Product {
   name         String
   description  String
   location     String
-  inventory    Inventory?
   orderDetails OrderDetail[]
-  Order        Order?     @relation(fields: [orderOrderId], references: [orderId])
-  orderOrderId Int?
+  orderId      Int      
+  order        Order      @relation(fields: [orderId], references: [id])
+  inventory    Inventory[]//Product can be tracked in many inventories
 }
 
 model Inventory {
   id           Int        @id @default(autoincrement())
-  product      Product    @relation(fields: [productId], references: [productId])
+  productId    Int        
+  product      Product    @relation(fields: [productId], references: [id])
   quantity     Int
 }
 
 model Order {
   id           Int        @id @default(autoincrement())
-  userId       Int
-  user         User       @relation(fields: [userId], references: [userId], name: "UserOrders")
-  products     Product[]
   status       String
   creationDate DateTime
-  orderDetails OrderDetail[]
-  shipments    Shipment[]
+  orderDetails OrderDetail[]//Order can have multiple productsDetails 
+  shipments    Shipment[] //Order can be in multiple shipments
+  product      Product[]  //Order can have multiple Products
+  userId       Int        
+  user         User       @relation(fields: [userId], references: [id])
 }
 
 model OrderDetail {
   id           Int        @id @default(autoincrement())
-  orderId      Int
-  productId    Int
   quantity     Int
-  order        Order      @relation(fields: [orderId], references: [orderId])
-  product      Product    @relation(fields: [productId], references: [productId])
+  orderId      Int
+  order        Order      @relation(fields: [orderId], references: [id])
+  productId    Int
+  product      Product    @relation(fields: [productId], references: [id])
 }
 
 model Shipment {
   id           Int        @id @default(autoincrement())
-  orderId      Int
   status       String
   shippedDate  DateTime
-  order        Order      @relation(fields: [orderId], references: [orderId])
+  orderId      Int
+  order        Order      @relation(fields: [orderId], references: [id])
 }
