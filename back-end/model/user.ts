@@ -14,10 +14,11 @@ export class User {
         username: string;
         email: string;
         password: string;
-        role: Role
-        order: Order[]
+        role: Role;
+        order: Order[];
     }) {
         this.validate(user);
+        
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;

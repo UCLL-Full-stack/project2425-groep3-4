@@ -10,14 +10,23 @@ export class Order {
     readonly products: Product[];
     readonly shipments: Shipment[];
 
-    constructor(id: number, user: User, products: Product[], status: string, creationDate: Date, shipments: Shipment[]) {
-        this.id = id;
-        this.user = user;
-        this.status = status;
-        this.creationDate = creationDate;
+    constructor(order: {
+        id: number;
+        user: User;  
+        status: string;
+        creationDate: Date;
+        products: Product[]; 
+        shipments: Shipment[];
+    }) {
+        this.validate(order);
+        
+        this.id = order.id;
+        this.user = order.user;
+        this.status = order.status;
+        this.creationDate = order.creationDate;
         this.products = [];
         this.shipments = [];
-    }
+    } 
 
     getId(): number | undefined {
         return this.id;
@@ -38,4 +47,28 @@ export class Order {
     getCreationDate(): Date {
         return this.creationDate;
     }
+
+    validate(order: {
+        user: User;
+        status: string;
+        creationDate: Date;
+    }) {
+        if (!order.user) {
+            throw new Error("User required");
+        }
+        if (!order.status?.trim()) {
+            throw new Error("Status is required");
+        }
+        if (!order.creationDate) {
+            throw new Error("CreationDate is required");
+        }
+    }
+
+    equals(order: Order): boolean {
+        return (
+            this.user === order.getUser() &&
+            this.status === order.getStatus() &&
+            this.creationDate === order.getCreationDate()
+        );
+    };
 }

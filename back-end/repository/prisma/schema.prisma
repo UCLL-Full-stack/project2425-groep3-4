@@ -11,8 +11,9 @@ model User {
   id           Int        @id @default(autoincrement())
   username     String
   password     String
+  email        String
   role         String
-  orders       Order[]    //One User can place many orders
+  order        Order[]    //One User can place many orders
 }
 
 model Product {
@@ -20,7 +21,7 @@ model Product {
   name         String
   description  String
   location     String
-  orderDetails OrderDetail[]
+  orderDetail  OrderDetail[]
   orderId      Int      
   order        Order      @relation(fields: [orderId], references: [id])
   inventory    Inventory[]//Product can be tracked in many inventories
@@ -37,8 +38,8 @@ model Order {
   id           Int        @id @default(autoincrement())
   status       String
   creationDate DateTime
-  orderDetails OrderDetail[]//Order can have multiple productsDetails 
-  shipments    Shipment[] //Order can be in multiple shipments
+  orderDetail  OrderDetail[]//Order can have multiple productsDetails 
+  shipment     Shipment[] //Order can be in multiple shipments
   product      Product[]  //Order can have multiple Products
   userId       Int        
   user         User       @relation(fields: [userId], references: [id])

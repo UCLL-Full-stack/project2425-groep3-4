@@ -5,10 +5,16 @@ export class Inventory {
     readonly product: Product;
     readonly quantity: number;
 
-    constructor(id: number, product: Product, quantity: number) {
-        this.id = id;
-        this.product = product;
-        this.quantity = quantity;
+    constructor(inventory: {
+        id: number;
+        product: Product; 
+        quantity: number;
+    
+    }) {
+        this.validate(inventory);
+        this.id = inventory.id;
+        this.product = inventory.product;
+        this.quantity = inventory.quantity;
     }
 
     getId(): number | undefined {
@@ -22,4 +28,23 @@ export class Inventory {
     getQuantity(): number {
         return this.quantity;
     }
+
+    validate(inventory: {
+        product: Product;
+        quantity: number;
+    }) { 
+        if (!inventory.product) {
+            throw new Error("No products in inventory")
+        }
+        if (!inventory.quantity) {
+            throw new Error("Quantity is required")
+        }
+    }
+
+    equals(inventory: Inventory): boolean {
+        return(
+            this.product === inventory.getProduct() &&
+            this.quantity === inventory.getQuantity()
+        );
+    };
 }
