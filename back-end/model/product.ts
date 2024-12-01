@@ -7,7 +7,6 @@ export class Product {
     readonly name: string;
     readonly description: string;
     readonly location: string;
-    readonly order: Order;
     readonly orderdetail: OrderDetail[];
     readonly inventory: Inventory[];
 
@@ -17,7 +16,6 @@ export class Product {
         name: string; 
         description: string; 
         location: string; 
-        order: Order; 
         orderdetail: OrderDetail[]; 
         inventory: Inventory[];
 
@@ -27,7 +25,6 @@ export class Product {
         this.name = product.name;
         this.description = product.description;
         this.location = product.location;
-        this.order = product.order;
         this.orderdetail = [];
         this.inventory = [];
 
@@ -50,10 +47,6 @@ export class Product {
         return this.location;
     }
 
-    public getOrder(): Order {
-        return this.order;
-    }
-
     public getOrderDetail(): OrderDetail[] {
         return this.orderdetail;
     }
@@ -66,7 +59,6 @@ export class Product {
         name: string;
         description: string;
         location: string;
-        order: Order;
     }) {
         if (!product.name?.trim()) {
             throw new Error("Name is required");
@@ -77,17 +69,13 @@ export class Product {
         if (!product.location?.trim()) {
             throw new Error("Location is required");
         }
-        if (!product.order) {
-            throw new Error("Order is required");
-        }
     }
 
     equals(product: Product): boolean {
         return(
             this.name === product.getName() &&
             this.description === product.getDescription() &&
-            this.location === product.getLocation() &&
-            this.order === product.getOrder() 
+            this.location === product.getLocation()
         );
     };
 }

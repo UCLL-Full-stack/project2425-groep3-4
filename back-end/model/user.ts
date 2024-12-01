@@ -5,7 +5,7 @@ export class User {
     readonly username: string;
     readonly email: string;
     readonly password: string;
-    readonly role: string;
+    readonly role: Role;
     readonly order: Order[];
 
 
@@ -80,5 +80,7 @@ export class User {
             this.role === user.getRole()  
         );
     };
+
+
 
 }

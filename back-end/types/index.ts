@@ -1,19 +1,19 @@
-type Role = 'admin' | 'shipment employee' | 'warehouse_employee' | 'warehouse_manager' | 'user';
-type Status = 'recieved' | 'processing' |'packing' | 'shipping'
-
+type Role = 'admin' | 'shipment' | 'employee' | 'manager' | 'user';
+type Status = 'shipping' | 'delivered';
+type OrderStatus = 'recieved' | 'processing' |'packing';
 
 type UserInput = {
     id?: number;
     username: string;
     password: string;
     email: string;
-    role: Role;
+    role?: Role;
     order: OrderInput[];
 }
 
 type ShipmentInput = {
     id?: number;
-    status: string;
+    status: Status;
     shippedDate: Date;
     order: OrderInput;
 }

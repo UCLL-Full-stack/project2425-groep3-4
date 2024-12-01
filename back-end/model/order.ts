@@ -1,3 +1,4 @@
+import { OrderDetail } from './orderDetail';
 import { Product } from './product';
 import { Shipment } from './shipment';
 import { User } from './user';
@@ -5,18 +6,18 @@ import { User } from './user';
 export class Order {
     readonly id?: number;
     readonly user: User;   
-    readonly status: string;
+    readonly status: Status;
     readonly creationDate: Date;
-    readonly products: Product[];
-    readonly shipments: Shipment[];
+    readonly orderDetail: OrderDetail[];
+    readonly shipment: Shipment[];
 
     constructor(order: {
         id: number;
         user: User;  
-        status: string;
+        status: Status;
         creationDate: Date;
-        products: Product[]; 
-        shipments: Shipment[];
+        orderDetail: OrderDetail[];
+        shipment: Shipment[];
     }) {
         this.validate(order);
         
@@ -24,8 +25,8 @@ export class Order {
         this.user = order.user;
         this.status = order.status;
         this.creationDate = order.creationDate;
-        this.products = [];
-        this.shipments = [];
+        this.orderDetail = [];
+        this.shipment = [];
     } 
 
     getId(): number | undefined {
@@ -36,11 +37,7 @@ export class Order {
         return this.user;
     }
 
-    getProducts(): Product[] {
-        return this.products;
-    }
-
-    getStatus(): string {
+    getStatus(): Status {
         return this.status;
     }
 
@@ -48,9 +45,17 @@ export class Order {
         return this.creationDate;
     }
 
+    getOrderDetail(): OrderDetail[] {
+        return this.orderDetail;
+    }
+
+    getShipment(): Shipment[] {
+        return this.shipment;
+    }
+
     validate(order: {
         user: User;
-        status: string;
+        status: Status;
         creationDate: Date;
     }) {
         if (!order.user) {

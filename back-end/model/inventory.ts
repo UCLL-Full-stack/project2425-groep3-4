@@ -1,7 +1,7 @@
 import { Product } from './product';
 
 export class Inventory {
-    readonly id: number;
+    readonly id?: number;
     readonly product: Product;
     readonly quantity: number;
 
@@ -21,7 +21,7 @@ export class Inventory {
         return this.id;
     }
 
-    getProduct(): Product {
+    getProduct(): Product{
         return this.product;
     }
 

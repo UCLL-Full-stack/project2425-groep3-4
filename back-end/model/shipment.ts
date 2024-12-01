@@ -2,13 +2,13 @@ import { Order } from './order';
 
 export class Shipment {
     readonly id?: number;
-    readonly status: string;
+    readonly status: Status;
     readonly shippedDate: Date;
     readonly order: Order;
 
     constructor(shipment: {
         id?: number;
-        status: string;
+        status: Status;
         shippedDate: Date;
         order: Order;
     }) {
@@ -36,7 +36,7 @@ export class Shipment {
     }
 
     validate(shipment: {
-        status: string;
+        status: Status;
         shippedDate: Date;
         order: Order;
     }) {
