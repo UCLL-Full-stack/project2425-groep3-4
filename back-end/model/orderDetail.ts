@@ -1,3 +1,5 @@
+import { OrderDetail as OrderDetailPrisma, Order as OrderPrisma, Product as ProductPrisma } from '@prisma/client'; 
+
 import { Product } from "./product";
 import { Order } from "./order";
 
@@ -58,5 +60,19 @@ export class OrderDetail {
             this.order === orderDetail.getOrder() &&
             this.product === orderDetail.getProduct()
         );
+    };
+
+    static from({
+        id,
+        quantity,
+        order,
+        product
+    }: OrderDetailPrisma & { order: OrderPrisma, product: ProductPrisma }) {
+        return new OrderDetail({
+            id,
+            quantity,
+            order: Order.from(order),
+            product: Product.from(product)
+        });
     };
 }

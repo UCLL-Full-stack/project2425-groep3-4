@@ -1,3 +1,4 @@
+import { User as UserPrisma, Order as OrderPrisma } from '@prisma/client'
 import { Order } from "./order";
 
 export class User {
@@ -81,6 +82,21 @@ export class User {
         );
     };
 
-
-
+    static from({
+        id,
+        username,
+        email,
+        password,
+        order,
+        role
+    }: UserPrisma & { order: OrderPrisma[] } ){
+        return new User({
+            id,
+            username,
+            email,
+            password,
+            order: order.map((orders) => Order.from(orders)),
+            role: role as Role,
+        });
+    };
 }

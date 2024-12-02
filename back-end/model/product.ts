@@ -1,6 +1,11 @@
-import { Inventory } from "./inventory";
+ import { Inventory } from "./inventory";
 import { Order } from "./order";
 import { OrderDetail } from "./orderDetail";
+import { 
+    Product as ProductPrisma, 
+    OrderDetail as OrderDetailPrisma,
+    Inventory as InventoryPrisma
+} from "@prisma/client";
 
 export class Product {
     readonly id?: number;
@@ -78,4 +83,22 @@ export class Product {
             this.location === product.getLocation()
         );
     };
+
+    static from({
+        id, 
+        name,
+        description,
+        location,
+        orderDetail,
+        inventory,
+    }: ProductPrisma & {orderDetail: OrderDetailPrisma, inventory: InventoryPrisma[]} ) {
+        return new Product({
+            id,
+            name,
+            description,
+            location,
+            orderdetail: OrderDetail.from(orderDetail),
+            inventory: inventory.map((inventories) => Inventory.from(inventories))
+        });
+    }
 }

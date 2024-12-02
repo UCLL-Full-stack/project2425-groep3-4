@@ -1,3 +1,4 @@
+import { Shipment as ShipmentPrisma } from '@prisma/client';
 import { Order } from './order';
 
 export class Shipment {
@@ -58,5 +59,19 @@ export class Shipment {
             this.shippedDate === shipment.getShippedDate() &&
             this.order === shipment.getOrder()
         );
+    };
+
+    static from({
+        id,
+        status,
+        shippedDate,
+        order
+    }: ShipmentPrisma) {
+        return new Shipment({
+            id,
+            status: status as Status,
+            shippedDate,
+            order
+        });
     };
 }

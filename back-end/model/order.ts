@@ -1,3 +1,10 @@
+import {
+    Order as OrderPrisma,
+    User as UserPrisma,
+    Shipment as ShipmentPrisma,
+    OrderDetail as OrderDetailPrisma
+} from '@prisma/client'
+
 import { OrderDetail } from './orderDetail';
 import { Product } from './product';
 import { Shipment } from './shipment';
@@ -75,5 +82,24 @@ export class Order {
             this.status === order.getStatus() &&
             this.creationDate === order.getCreationDate()
         );
+    };
+
+
+    static from({
+        id,
+        user,
+        status,
+        creationDate,
+        orderDetail,
+        shipment
+    }: OrderPrisma & {orderDetail: OrderDetailPrisma[], shipment: ShipmentPrisma[]}) {
+        return new Order ({
+            id,
+            user,
+            status: status as Status,
+            creationDate,
+            orderDetail: orderDetail.map((orderDetail) => OrderDetail.from(orderDetail)),
+            shipment: shipment.map((shipment) => Shipment.from(shipment))
+        });
     };
 }

@@ -1,4 +1,9 @@
+import { ieNoOpen } from 'helmet';
 import { Product } from './product';
+import { 
+    Inventory as InventoryPrisma,
+    Product as ProductPrisma
+} from "@prisma/client";
 
 export class Inventory {
     readonly id?: number;
@@ -47,4 +52,16 @@ export class Inventory {
             this.quantity === inventory.getQuantity()
         );
     };
+
+    static from({
+        id,
+        product,
+        quantity
+    }: InventoryPrisma & {product: ProductPrisma}) {
+        return new Inventory({
+            id,
+            product,
+            quantity
+        });
+    }
 }
