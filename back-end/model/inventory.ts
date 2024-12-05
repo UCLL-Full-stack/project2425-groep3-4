@@ -60,7 +60,7 @@ export class Inventory {
     }: InventoryPrisma & {product: ProductPrisma}) {
         return new Inventory({
             id,
-            product,
+            product: Product.from(product),
             quantity
         });
     }

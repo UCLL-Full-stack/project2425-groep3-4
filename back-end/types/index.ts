@@ -1,6 +1,5 @@
-type Role = 'admin' | 'shipment' | 'employee' | 'manager' | 'user';
-type Status = 'shipping' | 'delivered';
-type OrderStatus = 'recieved' | 'processing' |'packing';
+type Role = 'admin' | 'employee' | 'manager' | 'user';
+type Status = 'recieved' | 'processing' |'packing' |'shipping' | 'delivered';
 
 type UserInput = {
     id?: number;
@@ -11,19 +10,12 @@ type UserInput = {
     order: OrderInput[];
 }
 
-type ShipmentInput = {
-    id?: number;
-    status: Status;
-    shippedDate: Date;
-    order: OrderInput;
-}
-
 type OrderInput = {
     id?: number;
     status: string;
     creationDate: Date;
     orderDetail: OrderDetailInput[];
-    shipment: ShipmentInput[];
+    //shipment: ShipmentInput[];
     product: ProductInput[];
     user: UserInput;
 }
@@ -47,3 +39,12 @@ type InventoryInput = {
     product: ProductInput;
     quantity: number;
 }
+
+/*
+type ShipmentInput = {
+    id?: number;
+    status: Status;
+    shippedDate: Date;
+    order: OrderInput;
+}
+    */

@@ -12,27 +12,18 @@ export class Product {
     readonly name: string;
     readonly description: string;
     readonly location: string;
-    readonly orderdetail: OrderDetail[];
-    readonly inventory: Inventory[];
-
 
     constructor(product: {
         id: number;
         name: string; 
         description: string; 
         location: string; 
-        orderdetail: OrderDetail[]; 
-        inventory: Inventory[];
-
     }) {
         this.validate(product);
         this.id = product.id;
         this.name = product.name;
         this.description = product.description;
         this.location = product.location;
-        this.orderdetail = [];
-        this.inventory = [];
-
     }
 
 
@@ -50,14 +41,6 @@ export class Product {
 
     public getLocation(): string {
         return this.location;
-    }
-
-    public getOrderDetail(): OrderDetail[] {
-        return this.orderdetail;
-    }
-
-    public getInventory(): Inventory[] {
-        return this.inventory;
     }
 
     validate(product: {
@@ -88,17 +71,13 @@ export class Product {
         id, 
         name,
         description,
-        location,
-        orderDetail,
-        inventory,
-    }: ProductPrisma & {orderDetail: OrderDetailPrisma, inventory: InventoryPrisma[]} ) {
+        location
+    }: ProductPrisma) {
         return new Product({
             id,
             name,
             description,
-            location,
-            orderdetail: OrderDetail.from(orderDetail),
-            inventory: inventory.map((inventories) => Inventory.from(inventories))
+            location
         });
     }
 }

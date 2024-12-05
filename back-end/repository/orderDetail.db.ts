@@ -1,5 +1,62 @@
 import { PrismaClient } from '@prisma/client';
-import { OrderDetail } from '../../model/orderDetail';
+import { OrderDetail } from '../model/orderDetail';
+import database from '../util/database';
+
+
+const getAllOrderDetail = async(): Promise<OrderDetail> => {
+    try {
+        const orderDetailPrisma = await database.orderDetail.findMany({
+            include: {
+                
+            }
+        })
+        
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+const createOrderDetail = async(orderDetail: OrderDetail): Promise<OrderDetail> => {
+    try {
+        const orderDetailPrisma = await database.orderDetail
+        
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+};
+
+const getOrderDetailById = async({id}: {id: number}): Promise<OrderDetail> => {
+    try {
+        const orderDetailPrisma = await database.orderDetail
+        
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+const updateOrderDetail = async({id}: {id: number}): Promise<OrderDetail> => {
+    try {
+        const orderDetailPrisma = await database.orderDetail
+        
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+const deleteOrderDetail = async({id}: {id: number}): Promise<OrderDetail> => {
+    try {
+        const orderDetailPrisma = await database.orderDetail
+        
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+
 
 export class PrismaOrderDetailRepository {
     private prisma: PrismaClient;

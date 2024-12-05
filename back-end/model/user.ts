@@ -7,7 +7,6 @@ export class User {
     readonly email: string;
     readonly password: string;
     readonly role: Role;
-    readonly order: Order[];
 
 
     constructor(user: {
@@ -16,7 +15,6 @@ export class User {
         email: string;
         password: string;
         role: Role;
-        order: Order[];
     }) {
         this.validate(user);
         
@@ -25,7 +23,6 @@ export class User {
         this.email = user.email;
         this.password = user.password;
         this.role = user.role;
-        this.order = [];
     }
 
     public getId(): number | undefined {
@@ -46,10 +43,6 @@ export class User {
 
     public getRole(): string {
         return this.role;
-    }
-
-    public getOrder(): Order[] {
-        return this.order;
     }
 
     validate(user: {
@@ -87,7 +80,6 @@ export class User {
         username,
         email,
         password,
-        order,
         role
     }: UserPrisma & { order: OrderPrisma[] } ){
         return new User({
@@ -95,7 +87,6 @@ export class User {
             username,
             email,
             password,
-            order: order.map((orders) => Order.from(orders)),
             role: role as Role,
         });
     };

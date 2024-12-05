@@ -1,13 +1,11 @@
 import {
     Order as OrderPrisma,
     User as UserPrisma,
-    Shipment as ShipmentPrisma,
     OrderDetail as OrderDetailPrisma
 } from '@prisma/client'
 
 import { OrderDetail } from './orderDetail';
 import { Product } from './product';
-import { Shipment } from './shipment';
 import { User } from './user';
 
 export class Order {
@@ -16,7 +14,6 @@ export class Order {
     readonly status: Status;
     readonly creationDate: Date;
     readonly orderDetail: OrderDetail[];
-    readonly shipment: Shipment[];
 
     constructor(order: {
         id: number;
@@ -24,7 +21,6 @@ export class Order {
         status: Status;
         creationDate: Date;
         orderDetail: OrderDetail[];
-        shipment: Shipment[];
     }) {
         this.validate(order);
         
@@ -33,7 +29,6 @@ export class Order {
         this.status = order.status;
         this.creationDate = order.creationDate;
         this.orderDetail = [];
-        this.shipment = [];
     } 
 
     getId(): number | undefined {
@@ -54,10 +49,6 @@ export class Order {
 
     getOrderDetail(): OrderDetail[] {
         return this.orderDetail;
-    }
-
-    getShipment(): Shipment[] {
-        return this.shipment;
     }
 
     validate(order: {
@@ -91,15 +82,13 @@ export class Order {
         status,
         creationDate,
         orderDetail,
-        shipment
-    }: OrderPrisma & {orderDetail: OrderDetailPrisma[], shipment: ShipmentPrisma[]}) {
+    }: OrderPrisma & {user: UserPrisma, orderDetail: OrderDetailPrisma[]}) {
         return new Order ({
             id,
-            user,
+            user: User.from(user),
             status: status as Status,
             creationDate,
             orderDetail: orderDetail.map((orderDetail) => OrderDetail.from(orderDetail)),
-            shipment: shipment.map((shipment) => Shipment.from(shipment))
         });
     };
 }
