@@ -7,18 +7,18 @@ import {
 
 export class Inventory {
     readonly id?: number;
-    readonly product: Product;
+    readonly product: Product[];
     readonly quantity: number;
 
     constructor(inventory: {
         id: number;
-        product: Product; 
+        product: Product[]; 
         quantity: number;
     
     }) {
         this.validate(inventory);
         this.id = inventory.id;
-        this.product = inventory.product;
+        this.product = [];
         this.quantity = inventory.quantity;
     }
 
@@ -26,7 +26,7 @@ export class Inventory {
         return this.id;
     }
 
-    getProduct(): Product{
+    getProduct(): Product[]{
         return this.product;
     }
 
@@ -35,12 +35,8 @@ export class Inventory {
     }
 
     validate(inventory: {
-        product: Product;
         quantity: number;
     }) { 
-        if (!inventory.product) {
-            throw new Error("No products in inventory")
-        }
         if (!inventory.quantity) {
             throw new Error("Quantity is required")
         }
@@ -57,10 +53,10 @@ export class Inventory {
         id,
         product,
         quantity
-    }: InventoryPrisma & {product: ProductPrisma}) {
+    }: InventoryPrisma & {product: ProductPrisma[]}) {
         return new Inventory({
             id,
-            product: Product.from(product),
+            product: product.map((products) => Product.from(products)),
             quantity
         });
     }
