@@ -81,7 +81,7 @@ export class User {
         email,
         password,
         role
-    }: UserPrisma & { order: OrderPrisma[] } ){
+    }: UserPrisma){
         return new User({
             id,
             username,
