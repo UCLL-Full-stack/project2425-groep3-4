@@ -1,0 +1,26 @@
+{
+    "app.title" :"Simple WMS",
+    "general error" : "An error has occurred. Please try again later.", 
+    "header" : {
+        "welcome" : "Welcome",
+        "nav" : {
+            "home": "Home",
+            "product" : "Product",
+            "inventory": "Inventory",
+            "order" : "Order",
+            "login" : "Login",
+            "logout" : "Logout"
+        }
+    },
+    "login" : {
+        "title" : "Login",
+        "button" : "Login",
+        "success" : "Login successfully. Redirecting to homepage...", 
+        "validate" : {
+        },
+        "label": {
+            "username" : "Username: ",
+            "password" : "Password: "
+        }
+    }
+}

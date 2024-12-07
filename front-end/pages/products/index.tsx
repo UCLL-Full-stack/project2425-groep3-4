@@ -8,6 +8,18 @@ import ProductsService from '@services/ProductsService';
 import { StatusMessage } from '@types';
 import useSWR from 'swr';
 
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  const translations = await serverSideTranslations(locale ?? 'en', ['common']);
+  console.log('Translations loaded for locale:', locale, translations);
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+    },
+  };
+};
 const Home: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState<StatusMessage[]>([]);
   const [products, setProducts] = useState<Product[]>();
@@ -46,7 +58,6 @@ const Home: React.FC = () => {
       <main className="d-flex flex-column justify-content-center align-items-center">
         <h1>Pruduct</h1>
         <section>
-          <PruductOverviewTable products={products} />
         </section>
       </main>
       <Footer />

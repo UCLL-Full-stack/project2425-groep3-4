@@ -1,0 +1,25 @@
+{
+    "app.title": "Eenvoudig WMS",
+    "general error": "Er is een fout opgetreden. Probeer het later opnieuw.",
+    "header": {
+        "welcome": "Welkom",
+        "nav": {
+            "home": "Home",
+            "product": "Product",
+            "inventory": "Voorraad",
+            "order": "Bestelling",
+            "login": "Inloggen",
+            "logout": "Uitloggen"
+        }
+    },
+    "login": {
+        "title": "Inloggen",
+        "button": "Inloggen",
+        "success": "Succesvol ingelogd. Doorsturen naar de startpagina...",
+        "validate": {},
+        "label": {
+            "username": "Gebruikersnaam: ",
+            "password": "Wachtwoord: "
+        }
+    }
+}

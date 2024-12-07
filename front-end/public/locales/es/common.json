@@ -1,0 +1,25 @@
+{
+    "app.title": "WMS sencillo",
+    "general error": "Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.",
+    "header": {
+        "welcome": "Bienvenido",
+        "nav": {
+            "home": "Inicio",
+            "product": "Producto",
+            "inventory": "Inventario",
+            "order": "Pedido",
+            "login": "Iniciar sesión",
+            "logout": "Cerrar sesión"
+        }
+    },
+    "login": {
+        "title": "Iniciar sesión",
+        "button": "Iniciar sesión",
+        "success": "Sesión iniciada con éxito. Redirigiendo a la página de inicio...",
+        "validate": {},
+        "label": {
+            "username": "Usuario: ",
+            "password": "Contraseña: "
+        }
+    }
+}

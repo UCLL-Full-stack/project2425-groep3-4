@@ -3,12 +3,27 @@ import Image from 'next/image';
 import Header from '@components/header';
 import Footer from '@components/footer';
 import styles from '@styles/home.module.css';
+import { useTranslation } from 'next-i18next';
+
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  const translations = await serverSideTranslations(locale ?? 'en', ['common']);
+  console.log('Translations loaded for locale:', locale, translations);
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+    },
+  };
+};
 
 const Home: React.FC = () => {
+  const { t } = useTranslation('common');
   return (
     <>
       <Head>
-        <title>Simple WMS</title>
+        <title>{t('app.title')}</title>
         <meta name="description" content="Courses app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/images/wms.png" />
@@ -28,9 +43,9 @@ const Home: React.FC = () => {
 
         <div className={styles.description}>
           <p>
-          Simple WMS is designed to provide a simple yet comprehensive warehouse management solution for SMEs.<br/>
-          This project aims to streamline inventory management, order fulfillment and shipping processes to increase operational efficiency and reduce human errors.<br/>
-          The backend is developed with Node.js and Express to create a RESTful API, while the frontend is implemented with React to provide a dynamic user interface.<br/>
+            Simple WMS is designed to provide a simple yet comprehensive warehouse management solution for SMEs.<br />
+            This project aims to streamline inventory management, order fulfillment and shipping processes to increase operational efficiency and reduce human errors.<br />
+            The backend is developed with Node.js and Express to create a RESTful API, while the frontend is implemented with React to provide a dynamic user interface.<br />
           </p>
         </div>
       </main>

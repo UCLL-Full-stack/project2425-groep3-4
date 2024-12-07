@@ -3,6 +3,18 @@ import Header from '@components/header';
 import Footer from '@components/footer';
 import OrderOverviewTable from '@components/orders/OrderOverviewTable';
 
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  const translations = await serverSideTranslations(locale ?? 'en', ['common']);
+  console.log('Translations loaded for locale:', locale, translations);
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+    },
+  };
+};
 const Home: React.FC = () => {
   return (
     <>
