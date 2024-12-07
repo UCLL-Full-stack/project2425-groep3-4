@@ -13,12 +13,10 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
   const [updatedProduct, setUpdatedProduct] = useState<Partial<Product>>({});
   const router = useRouter();
 
-  const productService = new ProductService();
-
   const handleDelete = async () => {
     if (confirm('Are you sure you want to delete this product?')) {
       try {
-        await productService.deleteProduct(product.productId);
+        await ProductService.deleteProduct(product.id);
         alert('Product deleted successfully');
         router.push('/products');
       } catch (err) {
@@ -31,7 +29,7 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
   const handleUpdate = async () => {
     try {
       setIsUpdating(true);
-      const updated = await productService.updateProduct(product.productId, updatedProduct);
+      const updated = await ProductService.updateProduct(product.id, updatedProduct);
       alert('Product updated successfully');
       router.reload();
     } catch (err) {
@@ -47,7 +45,7 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
       <div className="card mb-4">
         <div className="card-body">
           <h5 className="card-title">Product Information</h5>
-          <p><strong>Product ID:</strong> {product.productId}</p>
+          <p><strong>Product ID:</strong> {product.id}</p>
           <div className="mb-3">
             <label className="form-label fw-bold">Name:</label>
             <input

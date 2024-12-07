@@ -16,33 +16,33 @@ export class PrismaProductRepository {
                 location: product.getLocation(),
             },
         });
-        return new Product(createdProduct.productId, createdProduct.name, createdProduct.description, createdProduct.location);
+        return new Product(createdProduct);
     }
 
     public async getProductById(productId: number): Promise<Product | undefined> {
         const foundProduct = await this.prisma.product.findUnique({
-            where: { productId },
+            where: { id: productId },
         });
-        return foundProduct ? new Product(foundProduct.productId, foundProduct.name, foundProduct.description, foundProduct.location) : undefined;
+        return foundProduct ? new Product(foundProduct) : undefined;
     }
 
     public async getAllProducts(): Promise<Product[]> {
         const products = await this.prisma.product.findMany();
-        return products.map(product => new Product(product.productId, product.name, product.description, product.location));
+        return products.map(product => new Product(product));
     }
 
     public async updateProduct(productId: number, updatedProduct: { name?: string; description?: string; location?: string }): Promise<Product | undefined> {
         const updated = await this.prisma.product.update({
-            where: { productId },
+            where: { id: productId },
             data: updatedProduct,
         });
-        return updated ? new Product(updated.productId, updated.name, updated.description, updated.location) : undefined;
+        return updated ? new Product(updated) : undefined;
     }
 
     public async deleteProduct(productId: number): Promise<boolean> {
         try {
             await this.prisma.product.delete({
-                where: { productId },
+                where: { id: productId },
             });
             return true;
         } catch (error) {

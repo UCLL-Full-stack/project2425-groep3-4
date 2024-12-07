@@ -1,9 +1,11 @@
 import express from 'express';
 import { ProductService } from '../service/product.service';
 import { Product } from '../model/product';
+import { PrismaProductRepository } from '../repository/product.db';
 
 const router = express.Router();
-const productService = new ProductService();
+const productRepository = new PrismaProductRepository(); 
+const productService = new ProductService(productRepository); 
 
 /**
  * @swagger
@@ -25,8 +27,6 @@ const productService = new ProductService();
  *           schema:
  *             type: object
  *             properties:
- *               productId:
- *                 type: integer
  *               name:
  *                 type: string
  *               description:
@@ -40,15 +40,19 @@ const productService = new ProductService();
  *         description: Invalid input
  */
 router.post('/products', async (req, res) => {
-    const { productId, name, description, location } = req.body;
+    const { name, description, location } = req.body;
 
-    if (productId == null || !name || !description || !location) {
+    if (!name || !description || !location) {
         return res.status(400).json({ message: 'Invalid input' });
     }
 
-    const product = new Product(productId, name, description, location);
-    const createdProduct = await productService.addProduct(product);
-    res.json(createdProduct);
+    try {
+        const product = new Product({ name, description, location });
+        const createdProduct = await productService.addProduct(product);
+        res.json(createdProduct);
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding product' + error });
+    }
 });
 
 /**
@@ -62,19 +66,23 @@ router.post('/products', async (req, res) => {
  *         description: List of all products
  */
 router.get('/products', async (req, res) => {
-    const products = await productService.getAllProducts();
-    res.json(products);
+    try {
+        const products = await productService.getAllProducts();
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving products', error: error });
+    }
 });
 
 /**
  * @swagger
- * /api/products/{productId}:
+ * /api/products/{id}:
  *   get:
  *     summary: Get product by ID
  *     tags: [Products]
  *     parameters:
  *       - in: path
- *         name: productId
+ *         name: id
  *         schema:
  *           type: integer
  *         required: true
@@ -85,26 +93,30 @@ router.get('/products', async (req, res) => {
  *       404:
  *         description: Product not found
  */
-router.get('/products/:productId', async (req, res) => {
-    const productId = parseInt(req.params.productId);
-    const product = await productService.getProductById(productId);
+router.get('/products/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
 
-    if (product) {
-        res.json(product);
-    } else {
-        res.status(404).json({ message: 'Product not found' });
+    try {
+        const product = await productService.getProductById(id);
+        if (product) {
+            res.json(product);
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving product', error: error });
     }
 });
 
 /**
  * @swagger
- * /api/products/{productId}:
+ * /api/products/{id}:
  *   patch:
  *     summary: Update product details
  *     tags: [Products]
  *     parameters:
  *       - in: path
- *         name: productId
+ *         name: id
  *         schema:
  *           type: integer
  *         required: true
@@ -128,27 +140,31 @@ router.get('/products/:productId', async (req, res) => {
  *       404:
  *         description: Product not found
  */
-router.patch('/products/:productId', async (req, res) => {
-    const productId = parseInt(req.params.productId);
+router.patch('/products/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
     const updatedProduct = req.body;
 
-    const product = await productService.updateProduct(productId, updatedProduct);
-    if (product) {
-        res.json({ message: 'Product updated successfully', product });
-    } else {
-        res.status(404).json({ message: 'Product not found' });
+    try {
+        const product = await productService.updateProduct(id, updatedProduct);
+        if (product) {
+            res.json({ message: 'Product updated successfully', product });
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating product', error: error });
     }
 });
 
 /**
  * @swagger
- * /api/products/{productId}:
+ * /api/products/{id}:
  *   delete:
  *     summary: Delete a product
  *     tags: [Products]
  *     parameters:
  *       - in: path
- *         name: productId
+ *         name: id
  *         schema:
  *           type: integer
  *         required: true
@@ -159,14 +175,18 @@ router.patch('/products/:productId', async (req, res) => {
  *       404:
  *         description: Product not found
  */
-router.delete('/products/:productId', async (req, res) => {
-    const productId = parseInt(req.params.productId);
-    const deleted = await productService.deleteProduct(productId);
+router.delete('/products/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
 
-    if (deleted) {
-        res.json({ message: 'Product deleted successfully' });
-    } else {
-        res.status(404).json({ message: 'Product not found' });
+    try {
+        const deleted = await productService.deleteProduct(id);
+        if (deleted) {
+            res.json({ message: 'Product deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting product', error: error });
     }
 });
 

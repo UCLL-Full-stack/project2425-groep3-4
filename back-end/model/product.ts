@@ -9,23 +9,18 @@ import {
 
 export class Product {
     readonly id?: number;
-    readonly name: string;
-    readonly description: string;
-    readonly location: string;
+    private name: string;
+    private description: string;
+    private location: string;
 
-    constructor(product: {
-        id: number;
-        name: string; 
-        description: string; 
-        location: string; 
-    }) {
-        this.validate(product);
+    constructor(product: { id?: number; name: string; description: string; location: string }) {
+        this.validate(product); 
         this.id = product.id;
         this.name = product.name;
         this.description = product.description;
         this.location = product.location;
     }
-
+    
 
     public getId(): number | undefined {
         return this.id;

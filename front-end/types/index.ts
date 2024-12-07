@@ -7,7 +7,7 @@ export type User = {
   };
   
   export type Product = {
-    productId: number;
+    id: number;
     name: string;
     description: string;
     location: string;

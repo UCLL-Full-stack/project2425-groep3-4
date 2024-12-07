@@ -1,65 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ProductService } from '@services/ProductService';
 import { Product } from '@types';
 import Link from 'next/link';
 
-type Props = { 
-  products: Array<Product>
-}
+type Props = {
+    products: Array<Product>;
+};
 
-const ProductOverviewTable: React.FC<Props> = ({products}: Props) => {
-    //const [products, setProducts] = useState<Product[]>([]);
-    
-    const [loading, setLoading] = useState<boolean>(true);
+const ProductOverviewTable: React.FC<Props> = ({ products: initialProducts }: Props) => {
+    const [products, setProducts] = useState<Product[]>(initialProducts);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [newProduct, setNewProduct] = useState<Partial<Product>>({
+    const [newProduct, setNewProduct] = useState<Partial<Omit<Product, 'id'>>>({
         name: '',
         description: '',
         location: '',
     });
 
-    const productService = new ProductService();
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setLoading(true);
-                const data = await productService.getAllProducts();
-                setProducts(data);
-            } catch (err) {
-                setError('Failed to load products');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProducts();
-    }, []);
 
     const handleAddProduct = async () => {
         try {
-            const addedProduct = await productService.addProduct({
-                productId: products.length + 1,
+            setLoading(true);
+            const addedProduct = await ProductService.addProduct({
                 name: newProduct.name || '',
                 description: newProduct.description || '',
                 location: newProduct.location || '',
             });
-            setProducts([...products, addedProduct]);
+
+            setProducts([...products, { ...addedProduct, id: 0 }]);
             setNewProduct({ name: '', description: '', location: '' });
         } catch (err) {
-            alert('Failed to add product');
+            setError('Failed to add product');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleDeleteProduct = async (productId: number) => {
+
+    const handleDeleteProduct = async (id: number) => {
         try {
-            await productService.deleteProduct(productId);
-            setProducts(products.filter((product) => product.productId !== productId));
+            setLoading(true);
+            await ProductService.deleteProduct(id); 
+            setProducts(products.filter((product) => product.id !== id));
         } catch (err) {
-            alert('Failed to delete product');
+            setError('Failed to delete product');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -127,20 +116,19 @@ const ProductOverviewTable: React.FC<Props> = ({products}: Props) => {
                         </td>
                     </tr>
 
-                    {/* Displaying products */}
                     {products.map((product) => (
-                        <tr key={product.productId}>
-                            <td>{product.productId}</td>
+                        <tr key={product.id}>
+                            <td>{product.id}</td>
                             <td>{product.name}</td>
                             <td>{product.description}</td>
                             <td>{product.location}</td>
                             <td>
-                                <Link href={`/products/${product.productId}`} passHref>
+                                <Link href={`/products/${product.id}`} passHref>
                                     <button className="btn btn-info me-2">Details</button>
                                 </Link>
                                 <button
                                     className="btn btn-danger"
-                                    onClick={() => handleDeleteProduct(product.productId)}
+                                    onClick={() => handleDeleteProduct(product.id)}
                                 >
                                     Delete
                                 </button>

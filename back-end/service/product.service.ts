@@ -1,19 +1,13 @@
-import { ProductRepository } from '../repository/memoryRepository/product.db';
 import { Product } from '../model/product';
+import { PrismaProductRepository } from '../repository/product.db';
 
 export class ProductService {
-    private productRepository: any;
-
-    constructor() {
-        if (process.env.NODE_ENV === 'local') {
-            this.productRepository = new (require('../repository/memoryRepository/product.db').ProductRepository)();
-        } else if (process.env.NODE_ENV === 'dev') {
-            this.productRepository = new (require('../repository/prismaRepository/product.db').ProductRepository)();
-        } else {
-            this.productRepository = new (require('../repository/memoryRepository/product.db').ProductRepository)();
-        }
-    }
+    private productRepository: PrismaProductRepository;
     
+    constructor(productRepository: PrismaProductRepository) {
+        this.productRepository = productRepository;
+    }
+
     public async addProduct(product: Product): Promise<Product> {
         return await this.productRepository.addProduct(product);
     }
