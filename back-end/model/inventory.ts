@@ -6,12 +6,12 @@ import {
 } from "@prisma/client";
 
 export class Inventory {
-    readonly id?: number;
-    readonly product: Product[];
-    readonly quantity: number;
+    private id?: number;
+    private product: Product[];
+    private quantity: number;
 
     constructor(inventory: {
-        id: number;
+        id?: number;
         product: Product[]; 
         quantity: number;
     
@@ -40,6 +40,11 @@ export class Inventory {
         if (!inventory.quantity) {
             throw new Error("Quantity is required")
         }
+    }
+
+    addProductsToInventory(product: Product) {
+        if(!product) throw new Error('Product is required');
+        this.product.push(product)
     }
 
     equals(inventory: Inventory): boolean {

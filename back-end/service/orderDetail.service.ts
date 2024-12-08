@@ -1,8 +1,21 @@
 // orderDetails.service.ts
-import { OrderDetailRepository } from '../repository/memoryRepository/orderDetail.db';
 import { OrderDetail } from '../model/orderDetail';
 import * as dotenv from 'dotenv';
+import orderDetailDb from '../repository/orderDetail.db';
 dotenv.config();
+
+
+const getOrderDetailByOrderId = async({id}: {id: number}): Promise<OrderDetail | null> => {
+    const orderDetail = await orderDetailDb.getOrderDetailByOrderId({ id });
+    if(!orderDetail) throw new Error(`Order detail of this order id ${id} does not exist.`)
+    return orderDetail;
+}
+
+export default {
+    getOrderDetailByOrderId,
+}
+
+
 
 export class OrderDetailService {
     private orderDetailRepository: any;

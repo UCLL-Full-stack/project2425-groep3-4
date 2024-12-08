@@ -9,14 +9,14 @@ import { Product } from './product';
 import { User } from './user';
 
 export class Order {
-    readonly id?: number;
-    readonly user: User;   
-    readonly status: Status;
-    readonly creationDate: Date;
-    readonly orderDetail: OrderDetail[];
+    private id?: number;
+    private user: User;   
+    private status: Status;
+    private creationDate: Date;
+    private orderDetail: OrderDetail[];
 
     constructor(order: {
-        id: number;
+        id?: number;
         user: User;  
         status: Status;
         creationDate: Date;
@@ -28,7 +28,7 @@ export class Order {
         this.user = order.user;
         this.status = order.status;
         this.creationDate = order.creationDate;
-        this.orderDetail = [];
+        this.orderDetail = order.orderDetail;
     } 
 
     getId(): number | undefined {

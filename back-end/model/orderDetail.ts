@@ -4,11 +4,11 @@ import { Product } from "./product";
 import { Order } from "./order";
 
 export class OrderDetail {
-    readonly id: number;
-    readonly quantity: number;
+    private id?: number;
+    private quantity: number;
     
     constructor(orderDetail: {
-        id: number;
+        id?: number;
         quantity: number;
     }) {
         this.validate(orderDetail)

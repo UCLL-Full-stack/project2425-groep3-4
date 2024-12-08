@@ -11,7 +11,7 @@ type UserInput = {
 
 type OrderInput = {
     id?: number;
-    status: string;
+    status: Status;
     creationDate: Date;
     orderDetail: OrderDetailInput[];
     user: UserInput;
@@ -31,6 +31,6 @@ type ProductInput = {
 
 type InventoryInput = {
     id?: number;
-    product: ProductInput;
+    product: ProductInput[];
     quantity: number;
 }
