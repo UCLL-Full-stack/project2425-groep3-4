@@ -8,7 +8,7 @@ import {
 } from "@prisma/client";
 
 export class Product {
-    readonly id?: number;
+    private id?: number;
     private name: string;
     private description: string;
     private location: string;

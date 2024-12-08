@@ -10,7 +10,8 @@ const getAllOrders = async():Promise<Order[]> => {
     try {
         const orderPrisma = await database.order.findMany({
             include: {
-                user: true
+                user: true,
+                orderDetail: true
             },
         });
         return orderPrisma.map((orderPrisma) => Order.from(orderPrisma));      
@@ -20,13 +21,16 @@ const getAllOrders = async():Promise<Order[]> => {
     }
 } 
 
-const getOrderById = async({id}: {id: number}): Promise<Order> => {
+const getOrderById = async({id}: {id: number}): Promise<Order | null> => {
     try {
         const orderPrisma = await database.order.findUnique({
-            where: {id},
-            include: {user: true},
+            where: { id },
+            include: { 
+                user: true,
+                orderDetail: true
+            },
         })
-        return Order.from(orderPrisma);
+        return orderPrisma ? Order.from(orderPrisma) : null;
     } catch (error) {
         console.log(error);
         throw new Error('Database error. See server log for details.')
@@ -37,12 +41,21 @@ const createOrder = async(order: Order): Promise<Order> => {
     try {
         const orderPrisma = await database.order.create({
             data: {
-                status,
-                creationDate,
-                orderDetail,
-                userId: 
+                status: order.getStatus(),
+                creationDate: order.getCreationDate(),
+                user: {
+                    create: {
+                        username: order.getUser().getUsername(),
+                        password: order.getUser().getPassword(),
+                        email: order.getUser().getEmail(),
+                        role: order.getUser().getRole()
+                    },
+                },
+                orderDetail: {
+                    connect: order.getOrderDetail().map((ord) => ({id: ord.getId()}))
+                }
             },
-            include: { user: true }
+            include: { user: true, orderDetail: true }
         });
         return Order.from(orderPrisma);
     } catch (error) {
@@ -51,12 +64,16 @@ const createOrder = async(order: Order): Promise<Order> => {
     }
 }
 
+/*
 const updateOrder = async(id: number, order: Order): Promise<Order> => {
     try {
+        
         const orderPrisma = await database.order.update({
             where: { id },
-            data: order,
-            include: { user: true}
+            data: {
+
+            },
+            include: { user: true, orderDetail: true}
         });
         return Order.from(orderPrisma);
     } catch (error) {
@@ -64,12 +81,13 @@ const updateOrder = async(id: number, order: Order): Promise<Order> => {
         throw new Error('Database error. See server log for details.')
     }
 }
+    */
 
 const deleteOrder = async(id: number): Promise<Order> => {
     try {
         const orderPrisma = await database.order.delete({
             where: { id },
-            include: { user: true }
+            include: { user: true, orderDetail: true }
         })
         return Order.from(orderPrisma);        
     } catch (error) {
@@ -82,6 +100,6 @@ export default {
     getAllOrders,
     getOrderById,
     createOrder,
-    updateOrder,
+    //updateOrder,
     deleteOrder
 }

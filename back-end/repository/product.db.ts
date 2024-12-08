@@ -1,53 +1,61 @@
 import { PrismaClient } from '@prisma/client';
 import { Product } from '../model/product';
+import database from '../util/database';
 
-export class PrismaProductRepository {
-    private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = new PrismaClient();
+const getAllProducts = async(): Promise<Product[]> => {
+    try {
+        const productPrisma = await database.product.findMany();
+        return productPrisma.map((prodPrisma) => Product.from(prodPrisma));
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database Error. See server log for details.")
     }
+}
 
-    public async addProduct(product: Product): Promise<Product> {
-        const createdProduct = await this.prisma.product.create({
-            data: {
+const getProductById = async({id}: {id: number}): Promise<Product | null> => {
+    try {
+        const productPrisma = await database.product.findUnique({
+            where: { id }
+        });
+        return productPrisma ? Product.from(productPrisma) : null;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database Error. See server log for details.");
+    }
+}
+
+const createProduct = async(product: Product): Promise<Product>=> {
+    try {
+        const productPrisma = await database.product.create({
+            data:{
                 name: product.getName(),
                 description: product.getDescription(),
                 location: product.getLocation(),
-            },
+            }
         });
-        return new Product(createdProduct);
+        return Product.from(productPrisma);
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database Error. See server log for details.");
     }
+}
 
-    public async getProductById(productId: number): Promise<Product | undefined> {
-        const foundProduct = await this.prisma.product.findUnique({
-            where: { id: productId },
-        });
-        return foundProduct ? new Product(foundProduct) : undefined;
+const deleteProduct = async(id: number): Promise<Product | null> => {
+    try {
+        const productPrisma = await database.product.delete({
+            where: { id }
+        })
+        return productPrisma ? Product.from(productPrisma): null;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database Error. See server log for details.");
     }
+}
 
-    public async getAllProducts(): Promise<Product[]> {
-        const products = await this.prisma.product.findMany();
-        return products.map(product => new Product(product));
-    }
-
-    public async updateProduct(productId: number, updatedProduct: { name?: string; description?: string; location?: string }): Promise<Product | undefined> {
-        const updated = await this.prisma.product.update({
-            where: { id: productId },
-            data: updatedProduct,
-        });
-        return updated ? new Product(updated) : undefined;
-    }
-
-    public async deleteProduct(productId: number): Promise<boolean> {
-        try {
-            await this.prisma.product.delete({
-                where: { id: productId },
-            });
-            return true;
-        } catch (error) {
-            console.error('Error deleting product:', error);
-            return false;
-        }
-    }
+export default{
+    getAllProducts,
+    getProductById,
+    createProduct,
+    deleteProduct
 }

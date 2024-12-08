@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { Product } from '../model/product';
 import { Inventory } from '../model/inventory';
 import database from '../util/database';
+import { da } from 'date-fns/locale';
 
 
 const getAllInventory = async(): Promise<Inventory[]> => {
@@ -51,24 +52,32 @@ const createInventory = async(inventory: Inventory): Promise<Inventory> => {
     }
 }
 
-/*
-const getInventoryByProduct = async({productId}: {productId: number}): Promise<Inventory | null> => {
+const updateProductsOfInventory = async({
+    inventory,
+}: {inventory: Inventory}): Promise<Inventory | null> => {
     try {
-        const inventoryPrisma = await database.inventory.findMany({
-            where : {id: productId},
-            include: {product: true},
+        const inventoryPrisma = await database.inventory.update({
+            where:{ id: inventory.getId() },
+            data: {
+                product: {
+                    connect: inventory.getProduct().map((prod) => ({ id: prod.getId()}))
+                }
+            },
+            include: {
+                product: true,
+            }
         })
-        return inventoryPrisma.map((inventoryPrisma) => Inventory.from(inventoryPrisma));
+        return inventoryPrisma ? Inventory.from(inventoryPrisma) : null
     } catch (error) {
         console.log(error);
-        throw new Error("Database error see logs for details")
+        throw new Error("Database Error, See server logs for details. ");
     }
-    
+
 }
-*/
 
 export default {
     getAllInventory,
     getInventoryById,
-    createInventory
+    createInventory,
+    updateProductsOfInventory
 }

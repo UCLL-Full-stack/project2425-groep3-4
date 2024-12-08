@@ -7,7 +7,6 @@ type UserInput = {
     password: string;
     email: string;
     role?: Role;
-    order: OrderInput[];
 }
 
 type OrderInput = {
@@ -15,15 +14,12 @@ type OrderInput = {
     status: string;
     creationDate: Date;
     orderDetail: OrderDetailInput[];
-    product: ProductInput[];
     user: UserInput;
 }
 
 type OrderDetailInput = {
     id?: number;
     quantity: number;
-    order: OrderInput;
-    product: ProductInput;
 }
 
 type ProductInput = {
