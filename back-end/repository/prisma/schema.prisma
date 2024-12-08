@@ -21,15 +21,15 @@ model Product {
   name        String
   description String
   location    String
-  inventory   Inventory[]
+  inventoryId Int
+  inventory   Inventory    @relation(fields: [inventoryId], references: [id])
   orderDetail OrderDetail[]
 }
 
 model Inventory {
   id        Int     @id @default(autoincrement())
-  productId Int
   quantity  Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product[]
 }
 
 model Order {

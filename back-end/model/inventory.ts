@@ -18,7 +18,7 @@ export class Inventory {
     }) {
         this.validate(inventory);
         this.id = inventory.id;
-        this.product = [];
+        this.product = inventory.product || [];
         this.quantity = inventory.quantity;
     }
 
@@ -44,7 +44,7 @@ export class Inventory {
 
     equals(inventory: Inventory): boolean {
         return(
-            this.product === inventory.getProduct() &&
+            this.product.every((prod, index) => prod.equals(inventory.getProduct()[index])) &&
             this.quantity === inventory.getQuantity()
         );
     };
@@ -56,7 +56,7 @@ export class Inventory {
     }: InventoryPrisma & {product: ProductPrisma[]}) {
         return new Inventory({
             id,
-            product: product.map((products) => Product.from(products)),
+            product: product.map((prod) => Product.from(prod)),
             quantity
         });
     }

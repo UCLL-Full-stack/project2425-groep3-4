@@ -15,7 +15,6 @@ type OrderInput = {
     status: string;
     creationDate: Date;
     orderDetail: OrderDetailInput[];
-    //shipment: ShipmentInput[];
     product: ProductInput[];
     user: UserInput;
 }
@@ -39,12 +38,3 @@ type InventoryInput = {
     product: ProductInput;
     quantity: number;
 }
-
-/*
-type ShipmentInput = {
-    id?: number;
-    status: Status;
-    shippedDate: Date;
-    order: OrderInput;
-}
-    */

@@ -8,9 +8,9 @@ const getAllInventory = async(): Promise<Inventory[]> => {
     try {
         const inventoryPrisma = await database.inventory.findMany({
             include: {
-                product: { include: { }},
+                product: true,
             }
-        });
+        }); 
         return inventoryPrisma.map((inventoryPrisma) => Inventory.from(inventoryPrisma))
         
     } catch (error) {
@@ -19,7 +19,7 @@ const getAllInventory = async(): Promise<Inventory[]> => {
 
 }
 
-const getInventoryById = async({id}: {id: number}): Promise<Inventory> => {
+const getInventoryById = async({id}: {id: number}): Promise<Inventory | null> => {
     try {
         const inventoryPrisma = await database.inventory.findUnique({
             where: { id },
@@ -27,7 +27,7 @@ const getInventoryById = async({id}: {id: number}): Promise<Inventory> => {
                 product: true,
             },
         });
-        return Inventory.from(inventoryPrisma);
+        return inventoryPrisma ? Inventory.from(inventoryPrisma) : null;
     } catch (error) {
         console.error(error);
         throw new Error('Database error. See server logs for details')
@@ -36,13 +36,9 @@ const getInventoryById = async({id}: {id: number}): Promise<Inventory> => {
 
 const createInventory = async(inventory: Inventory): Promise<Inventory> => {
     try {
-        const inventoryPrisma = database.inventory.create({
+        const inventoryPrisma = await database.inventory.create({
             data: {
-                id: inventory.getId(),
                 quantity: inventory.getQuantity(),
-                product: {
-                    connect: { id: inventory.getProduct().getId() },
-                },
             },
             include: {
                 product: true,
@@ -53,7 +49,6 @@ const createInventory = async(inventory: Inventory): Promise<Inventory> => {
         console.log(error);
         throw new Error('Database error. See server logs for details');
     }
-
 }
 
 /*
