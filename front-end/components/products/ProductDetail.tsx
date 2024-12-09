@@ -28,17 +28,28 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
 
   const handleUpdate = async () => {
     try {
+      console.log('Attempting to update product:', updatedProduct);
+      const finalProduct = {
+        name: updatedProduct.name ?? product.name,
+        description: updatedProduct.description ?? product.description,
+        location: updatedProduct.location ?? product.location,
+      };
+  
+      console.log('Final product data sent to API:', finalProduct);
+  
       setIsUpdating(true);
-      const updated = await ProductService.updateProduct(product.id, updatedProduct);
+  
+      const updated = await ProductService.updateProduct(product.id, finalProduct);
       alert('Product updated successfully');
       router.reload();
-    } catch (err) {
-      console.error('Failed to update product:', err);
-      alert('Failed to update product');
+    } catch (error: any) {
+      console.error('Failed to update product:', error);
+      alert('Failed to update product: ' + (error.response?.data?.message || error.message));
     } finally {
       setIsUpdating(false);
     }
   };
+  
 
   return (
     <div className="container mt-4">

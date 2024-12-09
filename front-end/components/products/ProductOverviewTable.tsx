@@ -28,7 +28,7 @@ const ProductOverviewTable: React.FC<Props> = ({ products: initialProducts }: Pr
                 location: newProduct.location || '',
             });
 
-            setProducts([...products, { ...addedProduct, id: 0 }]);
+            setProducts([...products, { ...addedProduct}]);
             setNewProduct({ name: '', description: '', location: '' });
         } catch (err) {
             setError('Failed to add product');
