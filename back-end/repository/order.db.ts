@@ -37,6 +37,22 @@ const getOrderById = async({id}: {id: number}): Promise<Order | null> => {
     }
 }
 
+const getOrderOfUser = async({id}: {id: number}): Promise<Order[]> => {
+    try {
+        const orderPrisma = await database.order.findMany({
+            where: {userId: id},
+            include: { 
+                user: true,
+                orderDetail: true
+            }
+        })
+        return orderPrisma.map((orderPrisma) => Order.from(orderPrisma));
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
 const createOrder = async(order: Order): Promise<Order> => {
     try {
         const orderPrisma = await database.order.create({
@@ -96,10 +112,28 @@ const deleteOrder = async(id: number): Promise<Order> => {
     }
 }
 
+const deleteOrderOfUser = async({id}: {id:number}) => {
+    try {
+        const orderPrisma = await database.order.deleteMany({
+            where: {userId: id}
+        })
+        console.log(`${orderPrisma.count} orders deleted for user with ID: ${id}`)
+        
+    } catch (error) {
+        console.log(error);
+        throw new Error('Database error. See server log for details.')
+    }
+}
+
+
+
+
 export default {
     getAllOrders,
     getOrderById,
+    getOrderOfUser,
     createOrder,
     //updateOrder,
-    deleteOrder
+    deleteOrder,
+    deleteOrderOfUser
 }

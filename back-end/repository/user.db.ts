@@ -25,12 +25,12 @@ const getUserById = async({id}: {id: number}): Promise<User | null> => {
     }
 }
 
-const getUserByUserName = async({username}: {username: string}): Promise<User[]> => {
+const getUserByUserName = async({username}: {username: string}): Promise<User | null> => {
     try {
-        const userPrisma = await database.user.findMany({
+        const userPrisma = await database.user.findFirst({
             where: { username }
         });
-        return userPrisma.map((userPrisma) => User.from(userPrisma));
+        return userPrisma ? User.from(userPrisma) : null;
     } catch (error) {
         console.log(error);
         throw new Error("Database Error. See server log for details.");
@@ -70,7 +70,7 @@ const updateUser = async (id: number, users: UserInput): Promise<User | null> =>
     }
 }
 
-const deleteUser = async({id}: {id: number}): Promise<User> => {
+const deleteUser = async(id: number) => {
     try {
         const userPrisma = await database.user.delete({
             where: { id }

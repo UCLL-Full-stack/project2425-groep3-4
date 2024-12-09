@@ -6,7 +6,7 @@ type UserInput = {
     username: string;
     password: string;
     email: string;
-    role?: Role;
+    role: Role;
 }
 
 type OrderInput = {

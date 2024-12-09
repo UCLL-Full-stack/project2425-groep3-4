@@ -41,7 +41,7 @@ export class User {
         return this.password;
     }
 
-    public getRole(): string {
+    public getRole(): Role {
         return this.role;
     }
 
