@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import orderDb from '../repository/order.db';
 import orderDetailDb from '../repository/orderDetail.db';
 import userDb from '../repository/user.db';
+import { OrderInput } from '../types';
 dotenv.config();
 
 

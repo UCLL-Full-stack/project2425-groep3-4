@@ -1,9 +1,47 @@
-import express from 'express';
-import { InventoryService } from '../service/inventory.service';
+/**
+ * @swagger
+ *   components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
+ *    schemas:
+ *      Inventory:
+ *          type: object
+ *          properties:
+ *            id:
+ *              type: number
+ *              format: int64
+ *            quantity:
+ *              type: number
+ *              format: int64
+ *            product:
+ *              type: array
+ *              items:
+ *                  $ref: '#/components/schemas/Product' 
+ *      InventoryInput:
+ *          type: object
+ *          properties:
+ *            quantity:
+ *              type: number
+ *              format: int64
+ *      ProductInput:
+ *          type: object
+ *          properties:
+ *            name:
+ *              type: string
+ *            description: 
+ *              type: string
+ *            location:
+ *              type: string
+ */
+import express, { NextFunction, Request, Response } from 'express';
+import inventoryService from '../service/inventory.service';
 import { Product } from '../model/product';
+import { InventoryInput, ProductInput } from '../types';
 
-const router = express.Router();
-const inventoryService = new InventoryService();
+const inventoryRouter = express.Router();
 
 /**
  * @swagger
@@ -14,61 +52,70 @@ const inventoryService = new InventoryService();
 
 /**
  * @swagger
- * /api/inventory:
+ * /inventory/create:
  *   post:
- *     summary: Add new inventory
+ *     security:
+ *      - bearerAuth: []
+ *     summary: Adds a new inventory
  *     tags: [Inventory]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               productId:
- *                 type: integer
- *               quantity:
- *                 type: integer
+ *             $ref: '#/components/schemas/InventoryInput'
  *     responses:
  *       200:
- *         description: Inventory added successfully
+ *         description: Inventory added successfully.
+ *         content: 
+ *           application/json:
+ *             schema: 
+ *               $ref: '#/components/schemas/Inventory'
  *       400:
  *         description: Invalid input
  */
-router.post('/inventory', async (req, res) => {
-    const { productId, quantity } = req.body;
-    if (productId == null || quantity == null) {
-        return res.status(400).json({ message: 'Invalid input' });
+inventoryRouter.post('/create', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const inventory = await <InventoryInput>req.body;
+        const result = await inventoryService.createInventory(inventory);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
     }
-    const product = new Product(productId, 'Sample Product', 'Sample Description', '0'); 
-    const inventory = await inventoryService.addInventory(product, quantity);
-    res.json(inventory);
 });
 
 /**
  * @swagger
- * /api/inventory:
+ * /inventory:
  *   get:
- *     summary: Get all inventories
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Get all inventories if admin, a list of all inventories
  *     tags: [Inventory]
  *     responses:
  *       200:
  *         description: List of all inventories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                  $ref: '#/components/schemas/Inventory'
  *       500:
  *         description: Internal server error
  */
-router.get('/inventory', async (req, res) => {
+inventoryRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const inventories = await inventoryService.getAllInventories();
-        res.json({ status: 'success', data: inventories });
+        const inventories = await inventoryService.getAllInventory();
+        res.status(200).json(inventories);
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
+        next(error);
     }
 });
 
 /**
  * @swagger
- * /api/inventory/update:
+ * /inventory/update:
  *   patch:
  *     summary: Update inventory quantity
  *     tags: [Inventory]
@@ -77,61 +124,125 @@ router.get('/inventory', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               productId:
- *                 type: integer
- *               quantity:
- *                 type: integer
+ *             $ref: '#/components/schemas/InventoryInput'
  *     responses:
  *       200:
  *         description: Inventory updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                  $ref: '#/components/schemas/Inventory'
  *       400:
  *         description: Invalid input
  */
-router.patch('/inventory/update', async (req, res) => {
-    const { productId, quantity } = req.body;
-    if (productId == null || quantity == null) {
-        return res.status(400).json({ message: 'Invalid input' });
+inventoryRouter.patch('/update', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const inventory = await <InventoryInput>req.body;
+
+        if (!inventory.id) {
+            return res.status(400).json({ message: 'Inventory ID is required' });
+        }
+
+        const updatedInventory = await inventoryService.updateInventoryDetails({
+            inventoryId: inventory.id,
+            quantity: inventory.quantity,
+            products: inventory.product,
+        });
+
+        if (!updatedInventory) {
+            return res.status(404).json({ message: 'Inventory not found or update failed' });
+        }
+
+        res.json({
+            message: 'Inventory updated successfully',
+            updatedInventory,
+        });
+    } catch (error) {
+       next(error) 
     }
-    const product = new Product(productId, 'Sample Product', 'Sample Description', '0');
-    await inventoryService.updateInventoryQuantity(product, quantity);
-    res.json({ message: 'Inventory updated successfully' });
 });
 
 /**
  * @swagger
- * /api/inventory/{productId}:
+ * /inventory/{id}:
  *   get:
- *     summary: Find inventory by product
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Get inventory by ID
  *     tags: [Inventory]
  *     parameters:
  *       - in: path
- *         name: productId
+ *         name: id
  *         schema:
  *           type: integer
- *         required: true
- *         description: Product ID
+ *           required: true
+ *           description: Inventory ID
  *     responses:
  *       200:
  *         description: Inventory details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                  $ref: '#/components/schemas/Inventory'
  *       404:
  *         description: Inventory not found
  */
-router.get('/inventory/:productId', async (req, res) => {
+inventoryRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const productId = parseInt(req.params.productId);
-        const product = new Product(productId, 'Sample Product', 'Sample Description', '0'); 
-        const inventory = await inventoryService.findInventoryByProduct(product);
-
-        if (inventory) {
-            res.json({ status: 'success', data: inventory });
-        } else {
-            res.status(404).json({ status: 'error', message: 'Inventory not found' });
-        }
+        const inventory = await inventoryService.getInventoryById(Number(req.params.id));
+        res.status(200).json(inventory);
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
+        next(error);
     }
 });
 
-export default router;
+/**
+ * @swagger
+ * /inventory/product/{id}:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Find inventory by product ID
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *           required: true
+ *           description: Product ID
+ *     responses:
+ *       200:
+ *         description: Inventory details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                  $ref: '#/components/schemas/Inventory'
+ *       404:
+ *         description: No inventory found for Product ID
+ */
+inventoryRouter.get('/product/:id', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const productId = parseInt(req.params.id, 10);
+        if (isNaN(productId)) {
+            return res.status(400).json({ message: 'Invalid Product ID' });
+        }
+
+        const inventory = await inventoryService.getInventoryByProductId(Number(req.params.id));
+        if (!inventory) {
+            return res.status(404).json({ message: `No inventory found for Product ID ${productId}` });
+        }
+
+        res.status(200).json(inventory);
+    } catch (error) {
+        next(error);
+    }
+});
+
+export default { inventoryRouter };

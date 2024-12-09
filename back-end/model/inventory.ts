@@ -30,8 +30,26 @@ export class Inventory {
         return this.product;
     }
 
+    setProducts(products: Product[]): void {
+        this.product = products;
+    }
+
     getQuantity(): number {
         return this.quantity;
+    }
+
+    setQuantity(quantity: number): void {
+        if (quantity < 0) throw new Error('Quantity cannot be negative');
+        this.quantity = quantity;
+    }
+
+    addProductsToInventory(product: Product) {
+        if(!product) throw new Error('Product is required');
+        this.product.push(product)
+    }
+
+    removeProductsFromInventory(product: Product) {
+        this.product = this.product.filter((p) => p.getId() !== product.getId());
     }
 
     validate(inventory: {
@@ -40,11 +58,6 @@ export class Inventory {
         if (!inventory.quantity) {
             throw new Error("Quantity is required")
         }
-    }
-
-    addProductsToInventory(product: Product) {
-        if(!product) throw new Error('Product is required');
-        this.product.push(product)
     }
 
     equals(inventory: Inventory): boolean {

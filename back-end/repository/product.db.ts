@@ -13,7 +13,7 @@ const getAllProducts = async(): Promise<Product[]> => {
     }
 }
 
-const getProductById = async(id: number): Promise<Product | null> => {
+const getProductById = async({id}: {id: number}): Promise<Product | null> => {
     try {
         const productPrisma = await database.product.findUnique({
             where: { id }

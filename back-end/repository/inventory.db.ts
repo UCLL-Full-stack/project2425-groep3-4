@@ -35,6 +35,27 @@ const getInventoryById = async({id}: {id: number}): Promise<Inventory | null> =>
     }
 }
 
+const getInventoryByProductId = async({id}: {id: number}): Promise<Inventory | null> => {
+    try {
+        const inventoryPrisma = await database.inventory.findFirst({
+            where: {
+                product: {
+                    some: {
+                        id: id,
+                    }
+                }
+            },
+            include: {
+                product: true,
+            }
+        });
+        return inventoryPrisma ? Inventory.from(inventoryPrisma) : null;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Database error. See server logs for details')
+    }
+}
+
 const createInventory = async(inventory: Inventory): Promise<Inventory> => {
     try {
         const inventoryPrisma = await database.inventory.create({
@@ -75,9 +96,12 @@ const updateProductsOfInventory = async({
 
 }
 
+
+
 export default {
     getAllInventory,
     getInventoryById,
+    getInventoryByProductId,
     createInventory,
     updateProductsOfInventory
 }

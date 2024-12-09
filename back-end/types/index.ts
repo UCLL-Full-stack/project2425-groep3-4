@@ -42,4 +42,5 @@ export {
     OrderInput,
     OrderDetailInput,
     ProductInput,
+    InventoryInput
 }

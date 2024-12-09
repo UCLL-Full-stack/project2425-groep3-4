@@ -1,5 +1,6 @@
 import { User as UserPrisma, Order as OrderPrisma } from '@prisma/client'
 import { Order } from "./order";
+import { Role } from '../types';
 
 export class User {
     private id?: number;
