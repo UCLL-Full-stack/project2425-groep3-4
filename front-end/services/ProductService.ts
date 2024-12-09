@@ -55,7 +55,7 @@ export class ProductService {
         return this.request<Product>(`${API_URL}/api/products/${id}`);
     }
 
-    public static async updateProduct(id: number, updatedProduct: Partial<Omit<Product, 'id'>>): Promise<Product> {
+    public static async updateProduct(id: number, updatedProduct: Partial<Product>): Promise<Product> {
         return this.request<Product>(`${API_URL}/api/products/${id}`, {
             method: 'PATCH',
             headers: {

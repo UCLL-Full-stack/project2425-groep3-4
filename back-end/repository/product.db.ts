@@ -13,7 +13,7 @@ const getAllProducts = async(): Promise<Product[]> => {
     }
 }
 
-const getProductById = async({id}: {id: number}): Promise<Product | null> => {
+const getProductById = async(id: number): Promise<Product | null> => {
     try {
         const productPrisma = await database.product.findUnique({
             where: { id }
@@ -41,6 +41,36 @@ const createProduct = async(product: Product): Promise<Product>=> {
     }
 }
 
+const updateProduct = async (product: Product): Promise<Product | null> => {
+    console.log('Updating product with ID:', product.getId());
+    if (!product.getId()) {
+        throw new Error('Product ID is required for update');
+    }
+
+    const existingProduct = await database.product.findUnique({
+        where: { id: product.getId() },
+    });
+    if (!existingProduct) {
+        throw new Error('Product not found');
+    }
+
+    try {
+        const productPrisma = await database.product.update({
+            where: { id: product.getId() },
+            data: {
+                name: product.getName(),
+                description: product.getDescription(),
+                location: product.getLocation(),
+            },
+        });
+        return Product.from(productPrisma);
+    } catch (error) {
+        console.error('Database error:', error);
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+
 const deleteProduct = async(id: number): Promise<Product | null> => {
     try {
         const productPrisma = await database.product.delete({
@@ -56,6 +86,7 @@ const deleteProduct = async(id: number): Promise<Product | null> => {
 export default{
     getAllProducts,
     getProductById,
+    updateProduct,
     createProduct,
     deleteProduct
 }

@@ -1,11 +1,8 @@
 import express from 'express';
-import { ProductService } from '../service/product.service';
+import productService from '../service/product.service';
 import { Product } from '../model/product';
-import { PrismaProductRepository } from '../repository/product.db';
 
 const router = express.Router();
-const productRepository = new PrismaProductRepository(); 
-const productService = new ProductService(productRepository); 
 
 /**
  * @swagger
@@ -47,8 +44,7 @@ router.post('/products', async (req, res) => {
     }
 
     try {
-        const product = new Product({ name, description, location });
-        const createdProduct = await productService.addProduct(product);
+        const createdProduct = await productService.createProduct({ name, description, location });
         res.json(createdProduct);
     } catch (error) {
         res.status(500).json({ message: 'Error adding product' + error });
@@ -140,19 +136,27 @@ router.get('/products/:id', async (req, res) => {
  *       404:
  *         description: Product not found
  */
+
 router.patch('/products/:id', async (req, res) => {
-    const id = parseInt(req.params.id);
-    const updatedProduct = req.body;
+    const { id } = req.params; 
+    const { name, description, location } = req.body;
+
+    if (!id || !name || !description || !location) {
+        return res.status(400).json({ message: 'Invalid input' });
+    }
 
     try {
-        const product = await productService.updateProduct(id, updatedProduct);
-        if (product) {
-            res.json({ message: 'Product updated successfully', product });
-        } else {
-            res.status(404).json({ message: 'Product not found' });
-        }
+        const product = new Product({
+            id: Number(id), 
+            name,
+            description,
+            location
+        });
+
+        const updatedProduct = await productService.updateProduct(product);
+        res.json(updatedProduct);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating product', error: error });
+        res.status(500).json({ message: 'Error updating product: ' + error });
     }
 });
 

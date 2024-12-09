@@ -34,3 +34,12 @@ type InventoryInput = {
     product: ProductInput[];
     quantity: number;
 }
+
+export {
+    Role,
+    Status,
+    UserInput,
+    OrderInput,
+    OrderDetailInput,
+    ProductInput,
+}
