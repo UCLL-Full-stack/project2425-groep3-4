@@ -19,6 +19,8 @@ type OrderInput = {
 
 type OrderDetailInput = {
     id?: number;
+    orderId: number;
+    productId: number;
     quantity: number;
 }
 

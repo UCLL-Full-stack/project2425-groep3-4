@@ -11,7 +11,7 @@ const getAllOrders = async():Promise<Order[]> => {
         const orderPrisma = await database.order.findMany({
             include: {
                 user: true,
-                orderDetail: true
+                orderDetails: true
             },
         });
         return orderPrisma.map((orderPrisma) => Order.from(orderPrisma));      
@@ -27,7 +27,7 @@ const getOrderById = async({id}: {id: number}): Promise<Order | null> => {
             where: { id },
             include: { 
                 user: true,
-                orderDetail: true
+                orderDetails: true
             },
         })
         return orderPrisma ? Order.from(orderPrisma) : null;
@@ -43,7 +43,7 @@ const getOrderOfUser = async({id}: {id: number}): Promise<Order[]> => {
             where: {userId: id},
             include: { 
                 user: true,
-                orderDetail: true
+                orderDetails: true
             }
         })
         return orderPrisma.map((orderPrisma) => Order.from(orderPrisma));
@@ -67,11 +67,11 @@ const createOrder = async(order: Order): Promise<Order> => {
                         role: order.getUser().getRole()
                     },
                 },
-                orderDetail: {
-                    connect: order.getOrderDetail().map((ord) => ({id: ord.getId()}))
+                orderDetails: {
+                    connect: order.getOrderDetails().map((ord) => ({id: ord.getId()}))
                 }
             },
-            include: { user: true, orderDetail: true }
+            include: { user: true, orderDetails: true }
         });
         return Order.from(orderPrisma);
     } catch (error) {
@@ -103,7 +103,7 @@ const deleteOrder = async(id: number): Promise<Order> => {
     try {
         const orderPrisma = await database.order.delete({
             where: { id },
-            include: { user: true, orderDetail: true }
+            include: { user: true, orderDetails: true }
         })
         return Order.from(orderPrisma);        
     } catch (error) {

@@ -9,7 +9,7 @@ import database from '../util/database';
 const getAllProducts = async(): Promise<Product[]> => productDb.getAllProducts();
 
 const getProductById = async(id: number): Promise<Product | null> => {
-    const product = await productDb.getProductById(id);
+    const product = await productDb.getProductById({id});
     if(!product) throw new Error(`No products with id: ${id}`)
     return product;
 }

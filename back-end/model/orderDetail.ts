@@ -1,18 +1,21 @@
-import { OrderDetail as OrderDetailPrisma, Order as OrderPrisma, Product as ProductPrisma } from '@prisma/client'; 
-
-import { Product } from "./product";
-import { Order } from "./order";
+import { OrderDetail as OrderDetailPrisma, Product as ProductPrisma } from '@prisma/client';
 
 export class OrderDetail {
     private id?: number;
+    private orderId: number; 
+    private productId: number; 
     private quantity: number;
-    
+
     constructor(orderDetail: {
         id?: number;
+        orderId: number;
+        productId: number;
         quantity: number;
     }) {
-        this.validate(orderDetail)
+        this.validate(orderDetail);
         this.id = orderDetail.id;
+        this.orderId = orderDetail.orderId;  
+        this.productId = orderDetail.productId;
         this.quantity = orderDetail.quantity;
     }
 
@@ -20,31 +23,52 @@ export class OrderDetail {
         return this.id;
     }
 
+    public getOrderId(): number {
+        return this.orderId;
+    }
+
+    public getProductId(): number {
+        return this.productId;
+    }
+
     public getQuantity(): number {
         return this.quantity;
     }
 
     validate(orderDetail: {
+        orderId: number;
+        productId: number;
         quantity: number;
     }) {
-        if (!orderDetail.quantity) {
-            throw new Error("Quantity is required");
+        if (!orderDetail.productId) {
+            throw new Error("Product ID is required");
+        }
+        if (!orderDetail.orderId) {
+            throw new Error("OrderId is required");
+        }
+        if (!orderDetail.quantity || orderDetail.quantity <= 0) {
+            throw new Error("Quantity must be greater than 0");
         }
     }
 
     equals(orderDetail: OrderDetail): boolean {
         return (
+            this.productId === orderDetail.getProductId() &&
             this.quantity === orderDetail.getQuantity()
         );
-    };
+    }
 
     static from({
         id,
+        orderId,
+        productId,
         quantity
     }: OrderDetailPrisma) {
         return new OrderDetail({
             id,
+            orderId,
+            productId,
             quantity
         });
-    };
+    }
 }

@@ -13,7 +13,7 @@ model User {
   password String
   email    String
   role     String
-  order    Order[]
+  orders   Order[]
 }
 
 model Product {
@@ -21,15 +21,15 @@ model Product {
   name        String
   description String
   location    String
-  inventoryId Int
-  inventory   Inventory    @relation(fields: [inventoryId], references: [id])
-  orderDetail OrderDetail[]
+  inventoryId Int?
+  inventory   Inventory?      @relation(fields: [inventoryId], references: [id])
+  orderDetails OrderDetail[]
 }
 
 model Inventory {
-  id        Int     @id @default(autoincrement())
-  quantity  Int
-  product   Product[]
+  id       Int       @id @default(autoincrement())
+  quantity Int
+  products Product[]
 }
 
 model Order {
@@ -38,7 +38,7 @@ model Order {
   creationDate DateTime
   userId       Int
   user         User          @relation(fields: [userId], references: [id])
-  orderDetail  OrderDetail[]
+  orderDetails OrderDetail[] 
 }
 
 model OrderDetail {

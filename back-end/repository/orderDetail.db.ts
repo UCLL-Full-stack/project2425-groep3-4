@@ -4,21 +4,29 @@ import database from '../util/database';
 import { get } from 'http';
 
 
-const createOrderDetail = async(orderDetail: OrderDetail): Promise<OrderDetail> => {
+const addOrderDetail = async (orderDetail: OrderDetail): Promise<OrderDetail> => {
     try {
+        const productId = orderDetail.getProductId();
+        const orderId = orderDetail.getOrderId();
+        if (!productId) {
+            throw new Error('Product ID is required and cannot be undefined.');
+        }
+
         const orderDetailPrisma = await database.orderDetail.create({
             data: {
+                orderId,
+                productId,
                 quantity: orderDetail.getQuantity(),
-            }
-        })
+            },
+        });
         return OrderDetail.from(orderDetailPrisma);
     } catch (error) {
-        console.log(error);
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
 };
 
-const getOrderDetailByOrderId = async({id}: {id: number}): Promise<OrderDetail | null> => {
+const getOrderDetailsByOrderId = async({id}: {id: number}): Promise<OrderDetail | null> => {
     try {
         const orderDetailPrisma = await database.orderDetail.findFirst({
             where: { id },
@@ -84,9 +92,9 @@ const deleteOrderDetail = async({id}: {id: number}): Promise<OrderDetail> => {
     */
 
 export default{
-    createOrderDetail,
-    getOrderDetailById,
-    getOrderDetailByOrderId
+    addOrderDetail,
+    // getOrderDetailById,
+    getOrderDetailsByOrderId
     //getAllOrderDetail,
     //updateOrderDetail,
     //deleteOrderDetail

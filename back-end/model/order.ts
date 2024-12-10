@@ -6,6 +6,7 @@ import {
 
 import { OrderDetail } from './orderDetail';
 import { Product } from './product';
+import { Status } from '../types';
 import { User } from './user';
 
 export class Order {
@@ -13,14 +14,14 @@ export class Order {
     private user: User;   
     private status: Status;
     private creationDate: Date;
-    private orderDetail: OrderDetail[];
+    private orderDetails: OrderDetail[];
 
     constructor(order: {
         id?: number;
         user: User;  
         status: Status;
         creationDate: Date;
-        orderDetail: OrderDetail[];
+        orderDetails: OrderDetail[];
     }) {
         this.validate(order);
         
@@ -28,7 +29,7 @@ export class Order {
         this.user = order.user;
         this.status = order.status;
         this.creationDate = order.creationDate;
-        this.orderDetail = order.orderDetail;
+        this.orderDetails = order.orderDetails;
     } 
 
     getId(): number | undefined {
@@ -47,8 +48,8 @@ export class Order {
         return this.creationDate;
     }
 
-    getOrderDetail(): OrderDetail[] {
-        return this.orderDetail;
+    getOrderDetails(): OrderDetail[] {
+        return this.orderDetails;
     }
 
     validate(order: {
@@ -81,14 +82,14 @@ export class Order {
         user,
         status,
         creationDate,
-        orderDetail,
-    }: OrderPrisma & {user: UserPrisma, orderDetail: OrderDetailPrisma[]}) {
+        orderDetails,
+    }: OrderPrisma & {user: UserPrisma, orderDetails: OrderDetailPrisma[]}) {
         return new Order ({
             id,
             user: User.from(user),
             status: status as Status,
             creationDate,
-            orderDetail: orderDetail.map((orderDetail) => OrderDetail.from(orderDetail)),
+            orderDetails: orderDetails.map((orderDetail) => OrderDetail.from(orderDetail)),
         });
     };
 }

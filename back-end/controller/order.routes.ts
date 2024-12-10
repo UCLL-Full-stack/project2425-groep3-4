@@ -1,12 +1,15 @@
 // order.routes.ts
 import express from 'express';
-import { OrderService } from '../service/order.service';
+import orderService from '../service/order.service';
+import userService  from '../service/user.service';
+import productService  from '../service/product.service';
 import { Order } from '../model/order';
+import { OrderDetail } from '../model/orderDetail';
 import { User } from '../model/user';
 import { Product } from '../model/product';
+import { OrderInput } from '../types';
 
 const router = express.Router();
-const orderService = new OrderService();
 
 /**
  * @swagger
@@ -38,29 +41,99 @@ const orderService = new OrderService();
  *                   type: integer
  *               status:
  *                 type: string
+ *                 enum: [received, processing, packing, shipping, delivered]
  *               creationDate:
  *                 type: string
  *                 format: date-time
+ *           example:
+ *             orderId: 1
+ *             userId: 1
+ *             productIds: [9, 10]
+ *             status: "received"
+ *             creationDate: "2024-12-10T20:52:22.843Z"
  *     responses:
- *       200:
+ *       201:
  *         description: Order created successfully
  *       400:
  *         description: Invalid input
+ *       404:
+ *         description: Resource not found
+ *       500:
+ *         description: Internal server error
  */
 router.post('/orders', async (req, res) => {
-    const { orderId, userId, productIds, status, creationDate } = req.body;
+    const { orderId, userId, productDetails, status, creationDate } = req.body;
 
-    if (orderId == null || userId == null || !productIds || !Array.isArray(productIds) || status == null || creationDate == null) {
+    if (
+        !orderId ||
+        !userId ||
+        !productDetails ||
+        !Array.isArray(productDetails) ||
+        productDetails.some(
+            (detail) => !detail.productId || !detail.quantity || detail.quantity <= 0
+        ) ||
+        !status ||
+        !creationDate
+    ) {
         return res.status(400).json({ message: 'Invalid input' });
     }
 
-    const user = new User(userId, '', '', '',);   // TODO:
-    const products = productIds.map((id: number) => new Product(id, 'Sample Product', 'Sample Description', '0')); 
+    try {
+        const user = await userService.getUserById({ id: userId });
+        if (!user) {
+            return res.status(404).json({ message: `User with id ${userId} not found` });
+        }
 
-    const order = new Order(orderId, user, products, status, new Date(creationDate));
-    const createdOrder = await orderService.createOrder(order);
-    res.json(createdOrder);
+        const orderDetails = await Promise.all(
+            productDetails.map(async ({ productId, quantity }: { productId: number; quantity: number }) => {
+                const product = await productService.getProductById(productId);
+                if (!product) {
+                    throw new Error(`Product with id ${productId} not found`);
+                }
+
+                return new OrderDetail({
+                    orderId,
+                    productId,
+                    quantity,
+                });
+            })
+        );
+
+        const order = new Order({
+            id: orderId,
+            user,
+            status,
+            creationDate: new Date(creationDate),
+            orderDetails: orderDetails,
+        });
+
+        const createdOrder = await orderService.createOrder({
+            id: order.getId(),
+            user: {
+                id: user.getId(),
+                username: user.getUsername(),
+                password: user.getPassword(),
+                email: user.getEmail(),
+                role: user.getRole(),
+            },
+            status: order.getStatus(),
+            creationDate: order.getCreationDate(),
+            orderDetail: order.getOrderDetails().map((detail) => ({
+                id: detail.getId(),
+                orderId: detail.getOrderId(),
+                productId: detail.getProductId(),
+                quantity: detail.getQuantity(),
+            })),
+        });
+
+        res.status(201).json(createdOrder);
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ message: 'An error occurred while creating the order.' });
+    }
 });
+
+
 
 /**
  * @swagger
@@ -96,9 +169,9 @@ router.get('/orders', async (req, res) => {
  *       404:
  *         description: Order not found
  */
-router.get('/orders/:orderId', async (req, res) => {
-    const orderId = parseInt(req.params.orderId);
-    const order = await orderService.getOrderById(orderId);
+router.get('/orders/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const order = await orderService.getOrderById({id});
 
     if (order) {
         res.json(order);
@@ -107,51 +180,51 @@ router.get('/orders/:orderId', async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * /api/orders/{orderId}/status:
- *   patch:
- *     summary: Update order status
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: orderId
- *         schema:
- *           type: integer
- *         required: true
- *         description: Order ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *     responses:
- *       200:
- *         description: Order status updated successfully
- *       400:
- *         description: Invalid input
- *       404:
- *         description: Order not found
- */
-router.patch('/orders/:orderId/status', async (req, res) => {
-    const orderId = parseInt(req.params.orderId);
-    const { status } = req.body;
+// /**
+//  * @swagger
+//  * /api/orders/{orderId}/status:
+//  *   patch:
+//  *     summary: Update order status
+//  *     tags: [Orders]
+//  *     parameters:
+//  *       - in: path
+//  *         name: orderId
+//  *         schema:
+//  *           type: integer
+//  *         required: true
+//  *         description: Order ID
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               status:
+//  *                 type: string
+//  *     responses:
+//  *       200:
+//  *         description: Order status updated successfully
+//  *       400:
+//  *         description: Invalid input
+//  *       404:
+//  *         description: Order not found
+//  */
+// router.patch('/orders/:id/status', async (req, res) => {
+//     const id = parseInt(req.params.id);
+//     const { status } = req.body;
 
-    if (status == null) {
-        return res.status(400).json({ message: 'Invalid input' });
-    }
+//     if (status == null) {
+//         return res.status(400).json({ message: 'Invalid input' });
+//     }
 
-    const updatedOrder = await orderService.updateOrderStatus(orderId, status);
-    if (updatedOrder) {
-        res.json({ message: 'Order status updated successfully' });
-    } else {
-        res.status(404).json({ message: 'Order not found' });
-    }
-});
+//     const updatedOrder = await orderService.updateOrderStatus(id, status);
+//     if (updatedOrder) {
+//         res.json({ message: 'Order status updated successfully' });
+//     } else {
+//         res.status(404).json({ message: 'Order not found' });
+//     }
+// });
 
 /**
  * @swagger
