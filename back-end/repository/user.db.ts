@@ -38,15 +38,15 @@ const getUserByUserName = async({username}: {username: string}): Promise<User | 
     }
 }
 
-const createUser = async ({
-    username,
-    email,
-    password,
-    role
-}: User): Promise<User> => {
+const createUser = async (user: User): Promise<User> => {
     try {
         const userPrisma = await database.user.create({
-            data:{ username, email, password, role}
+            data:{ 
+                username: user.getUsername(), 
+                email: user.getEmail(), 
+                password: user.getPassword(), 
+                role: user.getRole(),
+            }
         });
         return User.from(userPrisma);
     } catch (error) {

@@ -25,15 +25,15 @@ const getProductById = async({id}: {id: number}): Promise<Product | null> => {
     }
 }
 
-const createProduct = async({
-    id,
-    name,
-    description,
-    location,
-}: Product): Promise<Product>=> {
+const createProduct = async(product: Product): Promise<Product>=> {
     try {
         const productPrisma = await database.product.create({
-            data:{ id, name, description, location }
+            data:{ 
+                id: product.getId(), 
+                name: product.getName(), 
+                description: product.getDescription(), 
+                location: product.getLocation() 
+            }
         });
         return Product.from(productPrisma);
     } catch (error) {
