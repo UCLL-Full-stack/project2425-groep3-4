@@ -25,7 +25,7 @@ type OrderDetailInput = {
 }
 
 type ProductInput = {
-    id?: number;
+    id: number;
     name: string;
     description: string;
     location: string;
@@ -37,6 +37,12 @@ type InventoryInput = {
     quantity: number;
 }
 
+type AuthenticationResponse = {
+    token: string;
+    username: string;
+    role: string;
+}
+
 export {
     Role,
     Status,
@@ -44,5 +50,6 @@ export {
     OrderInput,
     OrderDetailInput,
     ProductInput,
-    InventoryInput
+    InventoryInput,
+    AuthenticationResponse
 }

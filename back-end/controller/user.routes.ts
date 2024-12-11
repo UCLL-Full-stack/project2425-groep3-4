@@ -1,10 +1,12 @@
 // user.routes.ts
 import express from 'express';
-import { UserService } from '../service/user.service';
+import userService from '../service/user.service';
 import { User } from '../model/user';
+import { UserInput } from '../types';
+import { resolve } from 'path';
+import { Response, Request, NextFunction } from 'express';
 
 const router = express.Router();
-const userService = new UserService();
 
 /**
  * @swagger
@@ -15,7 +17,7 @@ const userService = new UserService();
 
 /**
  * @swagger
- * /api/users:
+ * /user/signup:
  *   post:
  *     summary: Add a new user
  *     tags: [Users]
@@ -40,21 +42,20 @@ const userService = new UserService();
  *       400:
  *         description: Invalid input
  */
-router.post('/users', async (req, res) => {
-    const { userId, username, password, role } = req.body;
-
-    if (userId == null || !username || !password || !role) {
-        return res.status(400).json({ message: 'Invalid input' });
+router.post('/signup', async (req: Request, res: Response, next :NextFunction) => {
+    try {
+        const userInput = <UserInput>req.body;
+        const user = await userService.createUser(userInput); 
+        res.status(200).json(user);
+        
+    } catch (error) {
+        next(error);
     }
-
-    const user = new User(userId, username, password, role);
-    const createdUser = await userService.addUser(user);
-    res.json(createdUser);
 });
 
 /**
  * @swagger
- * /api/users:
+ * /users:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -62,14 +63,19 @@ router.post('/users', async (req, res) => {
  *       200:
  *         description: List of all users
  */
-router.get('/users', async (req, res) => {
-    const users = await userService.getAllUsers();
-    res.json(users);
+router.get('/users', async (req: Request, res: Response, next :NextFunction) => {
+    try {
+        const users = await userService.getAllUser();
+        res.json(users);
+        
+    } catch (error) {
+        next(error);
+    }
 });
 
 /**
  * @swagger
- * /api/users/{userId}:
+ * /users/{userId}:
  *   get:
  *     summary: Get user by ID
  *     tags: [Users]
@@ -86,9 +92,9 @@ router.get('/users', async (req, res) => {
  *       404:
  *         description: User not found
  */
-router.get('/users/:userId', async (req, res) => {
+router.get('/users/:userId', async (req: Request, res: Response, next :NextFunction) => {
     const userId = parseInt(req.params.userId);
-    const user = await userService.getUserById(userId);
+    const user = await userService.getUserById();
 
     if (user) {
         res.json(user);
@@ -132,7 +138,7 @@ router.get('/users/:userId', async (req, res) => {
  *       404:
  *         description: User not found
  */
-router.patch('/users/:userId', async (req, res) => {
+router.patch('/users/:userId', async (req: Request, res: Response, next :NextFunction) => {
     const userId = parseInt(req.params.userId);
     const updatedUser: { username?: string; password?: string; role?: string } = req.body; 
 
@@ -165,7 +171,7 @@ router.patch('/users/:userId', async (req, res) => {
  *       404:
  *         description: User not found
  */
-router.delete('/users/:userId', async (req, res) => {
+router.delete('/users/:userId', async (req: Request, res: Response, next :NextFunction) => {
     const userId = parseInt(req.params.userId);
     const deleted = await userService.deleteUser(userId);
 

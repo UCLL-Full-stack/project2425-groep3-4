@@ -1,5 +1,5 @@
 import { User } from '../model/user';
-import { UserInput } from '../types';
+import { UserInput, AuthenticationResponse } from '../types';
 import * as dotenv from 'dotenv';
 import userDb from '../repository/user.db';
 import bcrypt from 'bcrypt';
@@ -22,19 +22,16 @@ const getUserByUserName = async({username}: {username: string}): Promise<User> =
     return userName;
 }
 
-// const authenticate = async({username, password}: UserInput):Promise<User> => {
-//     const user = await userDb.getUserByUserName({ username });
-//     if(!user) throw new Error (`User with username: ${username} does not exist`);
-
-//     const isValidpassword = await bcrypt.compare(password, user.getPassword());
-//     if(!isValidpassword) throw new Error('Incorrect password');
-
-//     return {
-//         token:generateJwtToken({ username, role: user.getRole() }),
-//         username: username,
-//         role: user.getRole(),
-//     }
-// }
+const authenticate = async({username, password}: UserInput):Promise<AuthenticationResponse> => {
+    const user = await getUserByUserName({ username });
+    const isValidpassword = await bcrypt.compare(password, user.getPassword());
+    if(!isValidpassword) throw new Error('Incorrect password');
+    return {
+        token: generateJwtToken({ username, role: user.getRole() }),
+        username: username,
+        role: user.getRole(),
+    }
+}
 
 const createUser = async({
     username,
@@ -46,7 +43,6 @@ const createUser = async({
     if(!existingUser)throw new Error (`User with username: ${username} is already registered`);
 
     const hashedPassword = await bcrypt.hash(password, 12);
-
     const user = new User({
         username,
         email,
@@ -65,7 +61,6 @@ const updateUser = async (id: number, users: UserInput): Promise<User | null> =>
 
 const deleteUser = async(id: number): Promise<null | void> => {
     const userD = await userDb.getUserById({id});
-
     if (!userD) {
         throw new Error(`User with user id: ${userD} not found.`);
     } else {
@@ -78,44 +73,8 @@ export default {
     getAllUser,
     getUserById,
     getUserByUserName,
-    // authenticate,
+    authenticate,
     createUser,
     updateUser,
     deleteUser
 }
-
-
-
-// export class UserService {
-//     private userRepository: any;
-
-//     constructor() {
-//         if (process.env.NODE_ENV === 'local') {
-//             this.userRepository = new (require('../repository/memoryRepository/user.db').UserRepository)();
-//         } else if (process.env.NODE_ENV === 'dev') {
-//             this.userRepository = new (require('../repository/prismaRepository/user.db').UserRepository)();
-//         } else {
-//             this.userRepository = new (require('../repository/memoryRepository/user.db').UserRepository)();
-//         }
-//     }
-
-//     public async addUser(user: User): Promise<User> {
-//         return await this.userRepository.addUser(user);
-//     }
-
-//     public async getUserById(userId: number): Promise<User | undefined> {
-//         return await this.userRepository.getUserById(userId);
-//     }
-
-//     public async getAllUsers(): Promise<User[]> {
-//         return await this.userRepository.getAllUsers();
-//     }
-
-//     public async updateUser(userId: number, updatedUser: { username?: string; password?: string; role?: string }): Promise<User | undefined> {
-//         return await this.userRepository.updateUser(userId, updatedUser);
-//     }
-
-//     public async deleteUser(userId: number): Promise<boolean> {
-//         return await this.userRepository.deleteUser(userId);
-//     }
-// }

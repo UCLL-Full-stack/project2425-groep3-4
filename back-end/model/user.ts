@@ -26,23 +26,23 @@ export class User {
         this.role = user.role;
     }
 
-    public getId(): number | undefined {
+    getId(): number | undefined {
         return this.id;
     }
 
-    public getUsername(): string {
+    getUsername(): string {
         return this.username;
     }
 
-    public getEmail(): string {
+    getEmail(): string {
         return this.email;
     }
 
-    public getPassword(): string {
+    getPassword(): string {
         return this.password;
     }
 
-    public getRole(): Role {
+    getRole(): Role {
         return this.role;
     }
 
