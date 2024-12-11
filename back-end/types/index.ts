@@ -25,7 +25,7 @@ type OrderDetailInput = {
 }
 
 type ProductInput = {
-    id: number;
+    id?: number;
     name: string;
     description: string;
     location: string;

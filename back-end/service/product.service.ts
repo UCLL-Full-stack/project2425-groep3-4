@@ -13,12 +13,11 @@ const getProductById = async(id: number): Promise<Product | null> => {
 }
 
 const createProduct = async({
-    id,
     name,
     description,
     location
 }: ProductInput): Promise<Product>=> {
-    const product = new Product({id, name, description, location});
+    const product = new Product({name, description, location});
     return await productDb.createProduct(product);
 }
 

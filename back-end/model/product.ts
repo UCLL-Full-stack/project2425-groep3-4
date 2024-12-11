@@ -8,12 +8,12 @@ import {
 } from "@prisma/client";
 
 export class Product {
-    private id: number;
+    private id?: number;
     private name: string;
     private description: string;
     private location: string;
 
-    constructor(product: { id: number; name: string; description: string; location: string }) {
+    constructor(product: { id?: number; name: string; description: string; location: string }) {
         this.validate(product); 
         this.id = product.id;
         this.name = product.name;
@@ -22,7 +22,7 @@ export class Product {
     }
     
 
-    public getId(): number {
+    public getId(): number | undefined {
         return this.id;
     }
 
