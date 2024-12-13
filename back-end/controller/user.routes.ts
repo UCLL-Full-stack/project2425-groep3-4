@@ -1,10 +1,60 @@
-// user.routes.ts
-import express from 'express';
+/**
+ * @swagger
+ *  components:
+ *   securitySchemes:
+ *      bearerAuth:
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
+ * 
+ *   schemas:
+ *      User:
+ *          type: object
+ *          properties:
+ *              id: 
+ *                  type: number
+ *                  format: int64
+ *              username:
+ *                  type: string
+ *              email:
+ *                  type: string
+ *              password:
+ *                  type: string
+ *                  format: password
+ *      UserInput:
+ *          type: object
+ *          properties:
+ *              username:
+ *                  type: string
+ *              email:
+ *                  type: string
+ *              password:
+ *                  type: string
+ *                  format: password
+ *              role:
+ *                  type: string
+ * 
+ *      AuthenticationRequest:
+ *          type: object
+ *          properties: 
+ *                  username: 
+ *                      type: string
+ *                  password: 
+ *                      type: string
+ * 
+ *      AuthenticationResponse:
+ *          type: object
+ *          properties: 
+ *                  username: 
+ *                      type: string
+ *                  password: 
+ *                      type: string
+ */
+
 import userService from '../service/user.service';
 import { User } from '../model/user';
 import { UserInput } from '../types';
-import { resolve } from 'path';
-import { Response, Request, NextFunction } from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 
 const router = express.Router();
 
@@ -27,10 +77,9 @@ const router = express.Router();
  *       200:
  *         description: List of all users
  */
-router.get('/', async (req: Request & { auth: any } , res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { username, role } = req.auth;
-        const users = await userService.getUser({ username, role });
+        const users = await userService.getAllUser();
         res.status(200).json(users);
         
     } catch (error) {
@@ -41,7 +90,7 @@ router.get('/', async (req: Request & { auth: any } , res: Response, next: NextF
 
 /**
  * @swagger
- * /users/{userId}:
+ * /users/{id}:
  *   get:
  *     summary: Get user by ID
  *     tags: [Users]
@@ -58,14 +107,13 @@ router.get('/', async (req: Request & { auth: any } , res: Response, next: NextF
  *       404:
  *         description: User not found
  */
-router.get('/users/:userId', async (req: Request, res: Response, next :NextFunction) => {
-    const userId = parseInt(req.params.userId);
-    const user = await userService.getUserById();
-
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).json({ message: 'User not found' });
+router.get('/:id', async (req:Request, res:Response, next: NextFunction) => {
+    try {
+        const uid = parseInt(req.params.id);
+        const user = await userService.getUserById(uid);
+        res.status(200).json(user)
+    } catch (error) {
+        next(error);
     }
 });
 
@@ -139,7 +187,7 @@ router.post('/login', async (req:Request, res:Response, next: NextFunction) =>{
 
 /**
  * @swagger
- * /api/users/{userId}:
+ * /users/{id}:
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
@@ -156,14 +204,13 @@ router.post('/login', async (req:Request, res:Response, next: NextFunction) =>{
  *       404:
  *         description: User not found
  */
-router.delete('/users/:userId', async (req: Request, res: Response, next :NextFunction) => {
-    const userId = parseInt(req.params.userId);
-    const deleted = await userService.deleteUser(userId);
-
-    if (deleted) {
-        res.json({ message: 'User deleted successfully' });
-    } else {
-        res.status(404).json({ message: 'User not found' });
+router.delete('/:id', async (req: Request, res: Response, next :NextFunction) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const deleted = await userService.deleteUser(userId);
+        res.status(200).json(deleted);
+    } catch (error) {
+        next(error);
     }
 });
 

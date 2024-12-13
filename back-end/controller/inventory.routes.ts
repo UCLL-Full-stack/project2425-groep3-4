@@ -41,7 +41,7 @@ import inventoryService from '../service/inventory.service';
 import { Product } from '../model/product';
 import { InventoryInput, ProductInput } from '../types';
 
-const inventoryRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -74,7 +74,7 @@ const inventoryRouter = express.Router();
  *       400:
  *         description: Invalid input
  */
-inventoryRouter.post('/create', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/create', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const inventory = await <InventoryInput>req.body;
         const result = await inventoryService.createInventory(inventory);
@@ -104,7 +104,7 @@ inventoryRouter.post('/create', async (req: Request, res: Response, next: NextFu
  *       500:
  *         description: Internal server error
  */
-inventoryRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const inventories = await inventoryService.getAllInventory();
         res.status(200).json(inventories);
@@ -137,7 +137,7 @@ inventoryRouter.get('/', async (req: Request, res: Response, next: NextFunction)
  *       400:
  *         description: Invalid input
  */
-inventoryRouter.patch('/update', async (req: Request, res: Response, next: NextFunction) => {
+router.patch('/update', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const inventory = await <InventoryInput>req.body;
 
@@ -191,7 +191,7 @@ inventoryRouter.patch('/update', async (req: Request, res: Response, next: NextF
  *       404:
  *         description: Inventory not found
  */
-inventoryRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const inventory = await inventoryService.getInventoryById(Number(req.params.id));
         res.status(200).json(inventory);
@@ -227,7 +227,7 @@ inventoryRouter.get('/:id', async (req: Request, res: Response, next: NextFuncti
  *       404:
  *         description: No inventory found for Product ID
  */
-inventoryRouter.get('/product/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/product/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const productId = parseInt(req.params.id, 10);
         if (isNaN(productId)) {
@@ -245,4 +245,4 @@ inventoryRouter.get('/product/:id', async (req: Request, res: Response, next: Ne
     }
 });
 
-export default { inventoryRouter };
+export default router;

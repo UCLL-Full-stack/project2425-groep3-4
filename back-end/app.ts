@@ -7,16 +7,14 @@ import swaggerUi from 'swagger-ui-express';
 import { expressjwt } from 'express-jwt';
 import express, { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
-// import inventoryRoutes from './controller/inventory.routes';
+import inventoryRoutes from './controller/inventory.routes';
 import orderRoutes from './controller/order.routes';
 import orderDetailRoutes from './controller/orderDetail.routes';
 import productRoutes from './controller/product.routes';
-// import shipmentRoutes from './controller/shipment.routes';
-// import userRoutes from './controller/user.routes';
+import userRoutes from './controller/user.routes';
 
 const app = express();
 app.use(helmet());
-
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
@@ -25,19 +23,10 @@ app.use(
         },
     })
 );
-
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
-
-
-
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:8080' }));
 app.use(bodyParser.json());
-app.use(cors({
-    origin:  ['http://localhost:3000', 'http://localhost:8080'],
-    methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'], 
-    allowedHeaders: ['Content-Type', 'Authorization'], 
-}));
 
 app.use(
     expressjwt({
@@ -47,6 +36,16 @@ app.use(
         path: ['/api-docs', /^\/api-docs\/.*/, '/users/login', '/users/signup', '/status',  /^\/api\/products\/?.*/, /^\/api\/orders\/?.*/, ],
     })
 );
+
+app.use('/api', inventoryRoutes);
+app.use('/api', orderRoutes);
+app.use('/api', orderDetailRoutes);
+app.use('/api', productRoutes);
+app.use('/api', userRoutes);
+
+app.get('/status', (req, res) => {
+    res.json({ message: 'Back-end is running...' });
+});
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -62,19 +61,6 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-// Health check route
-app.get('/status', (req, res) => {
-    res.json({ message: 'Back-end is running...' });
-});
-
-// Integrate inventory routes
-// app.use('/api', inventoryRoutes);
-app.use('/api', orderRoutes);
-app.use('/api', orderDetailRoutes);
-app.use('/api', productRoutes);
-// app.use('/api', shipmentRoutes);
-// app.use('/api', userRoutes);        // Check completed
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err.name === 'UnauthorizedError') {

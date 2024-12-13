@@ -8,6 +8,10 @@ import { UnauthorizedError } from "express-jwt";
 import orderDb from '../repository/order.db';
 dotenv.config();
 
+const getAllUser = async(): Promise<User[]> => {
+    const user = await userDb.getAllUser();
+    return user;
+}
 
 const getUser = async({ username, role }: {username: string, role: string}): Promise<User[]> => {
     if(role === 'admin'){
@@ -18,7 +22,7 @@ const getUser = async({ username, role }: {username: string, role: string}): Pro
         throw new UnauthorizedError("credentials_required", { message: "Unauthorized for the resource." });
     }
 }
-const getUserById = async({id}: {id: number}): Promise<User | null> => {
+const getUserById = async(id: number): Promise<User | null> => {
     const user = await userDb.getUserById({id}); 
     if(!user) throw new Error(`User with id: ${id} does not exist.`);
     return user;
@@ -78,6 +82,7 @@ const deleteUser = async(id: number): Promise<null | void> => {
 }
 
 export default {
+    getAllUser,
     getUser,
     getUserById,
     getUserByUserName,
