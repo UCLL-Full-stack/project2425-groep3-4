@@ -25,9 +25,9 @@ const Home: React.FC = () => {
     const getProducts = async () => {
         try {
             const response = await ProductService.getAllProducts();
-            console.log('Fetched products:', response); 
+            console.log('Fetched products:', response);
             setProducts(response);
-         } catch (err) {
+        } catch (err) {
             console.error('Failed to fetch products:', err);
             setError('Failed to load products');
         } finally {
@@ -48,7 +48,7 @@ const Home: React.FC = () => {
                 <link rel="icon" href="/images/wms.png" />
             </Head>
             <Header />
-            <main className="d-flex flex-column justify-content-center align-items-center">
+            <main className="d-flex flex-column align-items-center">
                 <h1>Products</h1>
                 <section>
                     {loading && <p>Loading...</p>}

@@ -19,7 +19,7 @@
     text-align: center;
     max-width: var(--max-width);
     width: 100%;
-    z-index: 2;
+    z-index: 1;
     font-family: var(--font-mono);
 }
 
@@ -156,6 +156,10 @@
     background-clip: content-box;
 }
 
+.header {
+    margin-bottom: 20rem;
+}
+
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
     .card:hover {
@@ -220,7 +224,7 @@
     .description div {
         display: flex;
         justify-content: center;
-        position: fixed;
+        position: relative;
         width: 100%;
     }
 

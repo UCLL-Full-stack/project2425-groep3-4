@@ -1,47 +1,72 @@
 import Link from 'next/link';
-import Language from "./language/Language";
-import { useTranslation } from "next-i18next";
+import Language from './language/Language';
+import { useTranslation } from 'next-i18next';
 
 const Header: React.FC = () => {
-  const { t } = useTranslation("common");
-  console.log("Loaded translation:", t("app.title"))
+    const { t } = useTranslation('common');
+    console.log('Loaded translation:', t('app.title'));
 
-  return (
-    <header className="p-3 mb-3 border-bottom bg-dark bg-gradient">
+    return (
+        <header className="bg-dark bg-gradient text-white-50 border-bottom mb-5">
+            <div className="container">
+                <nav className="navbar navbar-expand-lg navbar-dark">
+                    {/* Brand Title */}
+                    <a className="navbar-brand fs-2 text-white" href="#">
+                        {t('app.title')}
+                    </a>
 
-      <a className="fs-2 d-flex justify-content-center mb-2 mb-lg-0 text-white-50 text-decoration-none">
-        {' '}
-        {t("app.title")}
-      </a>
+                    {/* Toggler Button for Mobile */}
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
 
-      <nav className="nav justify-content-center">
-        <Link href="/" className="nav-link px-4 fs-5 text-white">
-        {t("header.nav.home")}
-        </Link>
-
-        <Link href="/products" className="nav-link px-4 fs-5 text-white">
-        {t("header.nav.product")}
-        </Link>
-
-        <Link href="/inventories" className="nav-link px-4 fs-5 text-white">
-        {t("header.nav.inventory")}
-        </Link>
-
-        <Link href="/orders" className="nav-link px-4 fs-5 text-white">
-        {t("header.nav.order")}
-        </Link>
-
-        <Link href="/users" className="nav-link px-4 fs-5 text-white">
-          User Manangement
-        </Link>
-
-        <div className="px-4 fs-5">
-          <Language />
-        </div>
-      </nav>
-
-    </header>
-  );
+                    {/* Collapsible Menu */}
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav mx-auto">
+                            <li className="nav-item">
+                                <Link href="/" className="nav-link fs-5 text-white">
+                                    {t('header.nav.home')}
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/products" className="nav-link fs-5 text-white">
+                                    {t('header.nav.product')}
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/inventories" className="nav-link fs-5 text-white">
+                                    {t('header.nav.inventory')}
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/orders" className="nav-link fs-5 text-white">
+                                    {t('header.nav.order')}
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/users" className="nav-link fs-5 text-white">
+                                    User Management
+                                </Link>
+                            </li>
+                        </ul>
+                        {/* Language Selector */}
+                        <div className="d-flex align-items-center">
+                            <span className="fs-5 me-2 text-white">Language:</span>
+                            <Language />
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+    );
 };
 
 export default Header;

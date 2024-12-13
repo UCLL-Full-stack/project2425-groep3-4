@@ -48,7 +48,7 @@ const Home: React.FC = () => {
                 <link rel="icon" href="/images/wms.png" />
             </Head>
             <Header />
-            <main className="d-flex flex-column justify-content-center align-items-center">
+            <main className="d-flex flex-column align-items-center">
                 <h1>Order</h1>
                 <section>
                     {loading && <p>Loading...</p>}

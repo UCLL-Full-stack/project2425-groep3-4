@@ -64,7 +64,7 @@ const ProductDetailPage: React.FC = () => {
                 <link rel="icon" href="/images/wms.png" />
             </Head>
             <Header />
-            <main className="d-flex flex-column justify-content-center align-items-center">
+            <main className="d-flex flex-column align-items-center">
                 <h1>Pruduct Detail</h1>
                 <section>
                     <ProductDetail product={product} />

@@ -52,7 +52,7 @@ const ProductDetail: React.FC<Props> = ({ product }: Props) => {
   
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-5">
       <div className="card mb-4">
         <div className="card-body">
           <h5 className="card-title">Product Information</h5>
