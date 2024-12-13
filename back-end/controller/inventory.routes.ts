@@ -52,7 +52,7 @@ const inventoryRouter = express.Router();
 
 /**
  * @swagger
- * /inventory/create:
+ * /api/inventory/create:
  *   post:
  *     security:
  *      - bearerAuth: []
@@ -86,7 +86,7 @@ inventoryRouter.post('/create', async (req: Request, res: Response, next: NextFu
 
 /**
  * @swagger
- * /inventory:
+ * /api/inventory:
  *   get:
  *     security:
  *       - bearerAuth: []
@@ -115,7 +115,7 @@ inventoryRouter.get('/', async (req: Request, res: Response, next: NextFunction)
 
 /**
  * @swagger
- * /inventory/update:
+ * /api/inventory/update:
  *   patch:
  *     summary: Update inventory quantity
  *     tags: [Inventory]
@@ -166,7 +166,7 @@ inventoryRouter.patch('/update', async (req: Request, res: Response, next: NextF
 
 /**
  * @swagger
- * /inventory/{id}:
+ * /api/inventory/{id}:
  *   get:
  *     security:
  *       - bearerAuth: []
@@ -202,7 +202,7 @@ inventoryRouter.get('/:id', async (req: Request, res: Response, next: NextFuncti
 
 /**
  * @swagger
- * /inventory/product/{id}:
+ * /api/inventory/product/{id}:
  *   get:
  *     security:
  *       - bearerAuth: []

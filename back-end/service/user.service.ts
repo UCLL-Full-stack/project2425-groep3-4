@@ -4,12 +4,20 @@ import * as dotenv from 'dotenv';
 import userDb from '../repository/user.db';
 import bcrypt from 'bcrypt';
 import { generateJwtToken } from '../util/jwt';
+import { UnauthorizedError } from "express-jwt";
 import orderDb from '../repository/order.db';
 dotenv.config();
 
 
-const getAllUser = async(): Promise<User[]> => userDb.getAllUser();
-
+const getUser = async({ username, role }: {username: string, role: string}): Promise<User[]> => {
+    if(role === 'admin'){
+        return userDb.getAllUser();
+    } else if (role === 'user'){
+        return userDb.getUsersByUserName({ username });
+    } else {
+        throw new UnauthorizedError("credentials_required", { message: "Unauthorized for the resource." });
+    }
+}
 const getUserById = async({id}: {id: number}): Promise<User | null> => {
     const user = await userDb.getUserById({id}); 
     if(!user) throw new Error(`User with id: ${id} does not exist.`);
@@ -70,7 +78,7 @@ const deleteUser = async(id: number): Promise<null | void> => {
 }
 
 export default {
-    getAllUser,
+    getUser,
     getUserById,
     getUserByUserName,
     authenticate,
