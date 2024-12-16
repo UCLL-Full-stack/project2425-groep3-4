@@ -108,7 +108,10 @@ const deleteProductsFromInventory = async ({
     if (!productId.length) {
         throw new Error('At least one product ID is required');
     }
-    const updatedProducts = inventory.getProduct().filter((product) => !productId.includes(product.getId()));
+    const updatedProducts = inventory.getProduct().filter((product) => { 
+        const productIdToCheck = product.getId();  
+        return productIdToCheck !== undefined && !productId.includes(productIdToCheck);  
+    });
     inventory.setProducts(updatedProducts);
     return await inventoryDb.updateProductsOfInventory({ inventory });
 };
@@ -126,32 +129,32 @@ export default {
 
 
 
-//Original
-export class InventoryService {
-    private inventoryRepository: any;
+// //Original
+// export class InventoryService {
+//     private inventoryRepository: any;
 
-    constructor() {
-        if (process.env.NODE_ENV === 'local') {
-            this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
-        } else if (process.env.NODE_ENV === 'dev') {
-            this.inventoryRepository = new (require('../repository/prismaRepository/inventory.db').InventoryRepository)();
-        } else {
-            this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
-        }
-    }
-    public async addInventory(product: Product, quantity: number): Promise<Inventory> {
-        return await this.inventoryRepository.addInventory(product, quantity);
-    }
+//     constructor() {
+//         if (process.env.NODE_ENV === 'local') {
+//             this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
+//         } else if (process.env.NODE_ENV === 'dev') {
+//             this.inventoryRepository = new (require('../repository/prismaRepository/inventory.db').InventoryRepository)();
+//         } else {
+//             this.inventoryRepository = new (require('../repository/memoryRepository/inventory.db').InventoryRepository)();
+//         }
+//     }
+//     public async addInventory(product: Product, quantity: number): Promise<Inventory> {
+//         return await this.inventoryRepository.addInventory(product, quantity);
+//     }
 
-    public async getAllInventories(): Promise<Inventory[]> {
-        return await this.inventoryRepository.getAllInventories();
-    }
+//     public async getAllInventories(): Promise<Inventory[]> {
+//         return await this.inventoryRepository.getAllInventories();
+//     }
 
-    public async updateInventoryQuantity(product: Product, quantity: number): Promise<void> {
-        await this.inventoryRepository.updateInventoryQuantity(product, quantity);
-    }
+//     public async updateInventoryQuantity(product: Product, quantity: number): Promise<void> {
+//         await this.inventoryRepository.updateInventoryQuantity(product, quantity);
+//     }
 
-    public async findInventoryByProduct(product: Product): Promise<Inventory | undefined> {
-        return await this.inventoryRepository.findInventoryByProduct(product);
-    }
-}
+//     public async findInventoryByProduct(product: Product): Promise<Inventory | undefined> {
+//         return await this.inventoryRepository.findInventoryByProduct(product);
+//     }
+// }
