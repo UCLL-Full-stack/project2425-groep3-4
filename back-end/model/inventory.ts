@@ -1,81 +1,40 @@
-import { ieNoOpen } from 'helmet';
-import { Product } from './product';
-import { 
-    Inventory as InventoryPrisma,
-    Product as ProductPrisma
-} from "@prisma/client";
+import { Inventory as InventoryPrisma, InventoryDetail as InventoryDetailPrisma } from '@prisma/client';
+import { InventoryDetail } from './inventoryDetail';
 
 export class Inventory {
     private id?: number;
-    private product: Product[];
-    private quantity: number;
+    private details: InventoryDetail[];
 
     constructor(inventory: {
         id?: number;
-        product: Product[]; 
-        quantity: number;
-    
+        details: InventoryDetail[];
     }) {
         this.validate(inventory);
         this.id = inventory.id;
-        this.product = inventory.product || [];
-        this.quantity = inventory.quantity;
+        this.details = inventory.details;
     }
 
     getId(): number | undefined {
         return this.id;
     }
 
-    getProduct(): Product[]{
-        return this.product;
+    getDetails(): InventoryDetail[] {
+        return this.details;
     }
 
-    setProducts(products: Product[]): void {
-        this.product = products;
-    }
-
-    getQuantity(): number {
-        return this.quantity;
-    }
-
-    setQuantity(quantity: number): void {
-        if (quantity < 0) throw new Error('Quantity cannot be negative');
-        this.quantity = quantity;
-    }
-
-    addProductsToInventory(product: Product) {
-        if(!product) throw new Error('Product is required');
-        this.product.push(product)
-    }
-
-    removeProductsFromInventory(product: Product) {
-        this.product = this.product.filter((p) => p.getId() !== product.getId());
-    }
-
-    validate(inventory: {
-        quantity: number;
-    }) { 
-        if (!inventory.quantity) {
-            throw new Error("Quantity is required")
+    validate(inventory: { details: InventoryDetail[] }) {
+        if (!inventory.details || inventory.details.length === 0) {
+            throw new Error('Inventory must have at least one detail');
         }
     }
 
-    equals(inventory: Inventory): boolean {
-        return(
-            this.product.every((prod, index) => prod.equals(inventory.getProduct()[index])) &&
-            this.quantity === inventory.getQuantity()
-        );
-    };
-
     static from({
         id,
-        product,
-        quantity
-    }: InventoryPrisma & {product: ProductPrisma[]}) {
+        details,
+    }: InventoryPrisma & { details: InventoryDetailPrisma[] }): Inventory {
         return new Inventory({
             id,
-            product: product.map((prod) => Product.from(prod)),
-            quantity
+            details: details.map((detail) => InventoryDetail.from(detail)),
         });
     }
 }

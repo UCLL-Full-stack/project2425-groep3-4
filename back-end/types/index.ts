@@ -26,6 +26,7 @@ type OrderDetailInput = {
 
 type ProductInput = {
     id?: number;
+    quantity?: number;
     name: string;
     description: string;
     location: string;
@@ -33,9 +34,13 @@ type ProductInput = {
 
 type InventoryInput = {
     id?: number;
-    product: ProductInput[];
-    quantity: number;
-}
+    details: {
+        inventoryId: number;
+        productId: number; 
+        quantity: number;  
+    }[];
+};
+
 
 type AuthenticationResponse = {
     token: string;

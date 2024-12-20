@@ -67,12 +67,12 @@ export class Product {
         name,
         description,
         location
-    }: ProductPrisma) {
+    }: ProductPrisma): Product {
         return new Product({
             id,
             name,
             description,
-            location
+            location,
         });
     }
 }

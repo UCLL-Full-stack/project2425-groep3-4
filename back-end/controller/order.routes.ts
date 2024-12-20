@@ -80,7 +80,7 @@ router.post('/orders', async (req, res) => {
     }
 
     try {
-        const user = await userService.getUserById({ id: userId });
+        const user = await userService.getUserById(userId);
         if (!user) {
             return res.status(404).json({ message: `User with id ${userId} not found` });
         }

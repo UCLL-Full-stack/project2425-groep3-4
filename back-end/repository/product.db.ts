@@ -5,7 +5,12 @@ import database from '../util/database';
 
 const getAllProducts = async(): Promise<Product[]> => {
     try {
-        const productPrisma = await database.product.findMany();
+        const productPrisma = await database.product.findMany({
+            include: {
+                inventoryDetails: true, 
+                orderDetails: true,
+            },
+        });
         return productPrisma.map((prodPrisma) => Product.from(prodPrisma));
     } catch (error) {
         console.log(error);

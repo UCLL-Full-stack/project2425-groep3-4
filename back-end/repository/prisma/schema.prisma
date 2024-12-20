@@ -17,19 +17,26 @@ model User {
 }
 
 model Product {
-  id          Int           @id @default(autoincrement())
-  name        String
-  description String
-  location    String
-  inventoryId Int?
-  inventory   Inventory?      @relation(fields: [inventoryId], references: [id])
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String
+  location     String
+  inventoryDetails InventoryDetail[]
   orderDetails OrderDetail[]
 }
 
 model Inventory {
   id       Int       @id @default(autoincrement())
-  quantity Int
-  products Product[]
+  details  InventoryDetail[]
+}
+
+model InventoryDetail {
+  id          Int       @id @default(autoincrement())
+  quantity    Int
+  productId   Int
+  inventoryId Int
+  product     Product   @relation(fields: [productId], references: [id])
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
 }
 
 model Order {
@@ -38,7 +45,7 @@ model Order {
   creationDate DateTime
   userId       Int
   user         User          @relation(fields: [userId], references: [id])
-  orderDetails OrderDetail[] 
+  orderDetails OrderDetail[]
 }
 
 model OrderDetail {
