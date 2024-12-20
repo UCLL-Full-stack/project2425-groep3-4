@@ -15,6 +15,8 @@ const router = express.Router();
  * @swagger
  * /api/products:
  *   post:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Add a new product
  *     tags: [Products]
  *     requestBody:
@@ -55,6 +57,8 @@ router.post('/', async (req, res) => {
  * @swagger
  * /api/products:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get all products
  *     tags: [Products]
  *     responses:
@@ -74,6 +78,8 @@ router.get('/', async (req, res) => {
  * @swagger
  * /api/products/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get product by ID
  *     tags: [Products]
  *     parameters:
@@ -108,6 +114,8 @@ router.get('/:id', async (req, res) => {
  * @swagger
  * /api/products/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Update product details
  *     tags: [Products]
  *     parameters:
@@ -164,6 +172,8 @@ router.patch('/:id', async (req, res) => {
  * @swagger
  * /api/products/{id}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Delete a product
  *     tags: [Products]
  *     parameters:

@@ -23,6 +23,8 @@ const router = express.Router();
  * @swagger
  * /api/orders:
  *   post:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Create a new order
  *     tags: [Orders]
  *     requestBody:
@@ -116,6 +118,8 @@ router.post('/', async (req, res) => {
  * @swagger
  * /api/orders:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get all orders
  *     tags: [Orders]
  *     responses:
@@ -135,6 +139,8 @@ router.get('/', async (req, res) => {
  * @swagger
  * /api/orders/{orderId}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get order by ID
  *     tags: [Orders]
  *     parameters:
@@ -211,6 +217,8 @@ router.get('/:id', async (req, res) => {
  * @swagger
  * /api/orders/{orderId}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Delete order by ID
  *     tags: [Orders]
  *     parameters:

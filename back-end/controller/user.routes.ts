@@ -195,6 +195,8 @@ router.post('/login', async (req:Request, res:Response, next: NextFunction) =>{
  * @swagger
  * /api/users/{id}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Delete a user
  *     tags: [Users]
  *     parameters:

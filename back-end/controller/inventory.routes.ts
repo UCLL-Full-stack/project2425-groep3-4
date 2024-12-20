@@ -54,6 +54,8 @@ const router = express.Router();
  * @swagger
  * /api/inventory:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get all inventories
  *     tags: [Inventory]
  *     responses:
@@ -78,6 +80,8 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
  * @swagger
  * /api/inventory/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get inventory by ID
  *     tags: [Inventory]
  *     parameters:
@@ -119,6 +123,8 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
  * @swagger
  * /api/inventory:
  *   post:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Create a new inventory
  *     tags: [Inventory]
  *     requestBody:
@@ -152,6 +158,8 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
  * @swagger
  * /api/inventory/{id}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Delete inventory by ID
  *     tags: [Inventory]
  *     parameters:
