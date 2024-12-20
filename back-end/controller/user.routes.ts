@@ -67,7 +67,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   get:
  *     security:
  *          - bearerAuth: []
@@ -90,13 +90,15 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get user by ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: id  
  *         schema:
  *           type: integer
  *         required: true
@@ -106,6 +108,8 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
  *         description: User found
  *       404:
  *         description: User not found
+ *       401:
+ *         description: Unauthorized
  */
 router.get('/:id', async (req:Request, res:Response, next: NextFunction) => {
     try {
@@ -120,7 +124,7 @@ router.get('/:id', async (req:Request, res:Response, next: NextFunction) => {
 
 /**
  * @swagger
- * /api/user/signup:
+ * /api/users/signup:
  *   post:
  *     summary: Add a new user
  *     tags: [Users]
@@ -131,9 +135,9 @@ router.get('/:id', async (req:Request, res:Response, next: NextFunction) => {
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: integer
  *               username:
+ *                 type: string
+ *               email:            
  *                 type: string
  *               password:
  *                 type: string
@@ -144,6 +148,8 @@ router.get('/:id', async (req:Request, res:Response, next: NextFunction) => {
  *         description: User added successfully
  *       400:
  *         description: Invalid input
+ *       409:
+ *         description: User already exists
  */
 router.post('/signup', async (req: Request, res: Response, next :NextFunction) => {
     try {
@@ -158,7 +164,7 @@ router.post('/signup', async (req: Request, res: Response, next :NextFunction) =
 
 /**
  * @swagger
- * /users/login:
+ * /api/users/login:
  *  post:
  *      summary: Log in using email and password. Returns an object with JWT token and username/email when successful.
  *      requestBody:
@@ -187,7 +193,7 @@ router.post('/login', async (req:Request, res:Response, next: NextFunction) =>{
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
@@ -214,6 +220,7 @@ router.delete('/:id', async (req: Request, res: Response, next :NextFunction) =>
     }
 });
 
+export default router;
 // /**
 //  * @swagger
 //  * /api/users/{userId}:
@@ -261,4 +268,3 @@ router.delete('/:id', async (req: Request, res: Response, next :NextFunction) =>
 //     }
 // });
 
-export default router;

@@ -17,17 +17,17 @@ model User {
 }
 
 model Product {
-  id           Int           @id @default(autoincrement())
-  name         String
-  description  String
-  location     String
+  id               Int               @id @default(autoincrement())
+  name             String
+  description      String
+  location         String
   inventoryDetails InventoryDetail[]
-  orderDetails OrderDetail[]
+  orderDetails     OrderDetail[]
 }
 
 model Inventory {
-  id       Int       @id @default(autoincrement())
-  details  InventoryDetail[]
+  id      Int               @id @default(autoincrement())
+  details InventoryDetail[]
 }
 
 model InventoryDetail {
@@ -35,8 +35,8 @@ model InventoryDetail {
   quantity    Int
   productId   Int
   inventoryId Int
-  product     Product   @relation(fields: [productId], references: [id])
   inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
 }
 
 model Order {

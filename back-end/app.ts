@@ -48,13 +48,14 @@ app.use(
         path: [
             '/api-docs',
             /^\/api-docs\/.*/,
-            '/users/login',
-            '/users/signup',
             '/status',
+            '/api/users/login',
+            '/api/users/signup',
+            '/users/login',
             /^\/api\/products\/?.*/,
             /^\/api\/orders\/?.*/,
-            /^\/api\/inventory\/?.*/,
-        ],
+            /^\/api\/inventory\/?.*/
+        ]
     })
 );
 

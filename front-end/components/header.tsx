@@ -1,10 +1,23 @@
 import Link from 'next/link';
 import Language from './language/Language';
 import { useTranslation } from 'next-i18next';
+import { useEffect, useState } from 'react';
 
 const Header: React.FC = () => {
     const { t } = useTranslation('common');
-    console.log('Loaded translation:', t('app.title'));
+    const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
+
+    useEffect(() => {
+        const username = localStorage.getItem('loggedInUser');
+        setLoggedInUser(username);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        setLoggedInUser(null);
+    };
 
     return (
         <header className="bg-dark bg-gradient text-white-50 border-bottom mb-5">
@@ -51,11 +64,30 @@ const Header: React.FC = () => {
                                     {t('header.nav.order')}
                                 </Link>
                             </li>
-                            <li className="nav-item">
-                                <Link href="/users" className="nav-link fs-5 text-white">
-                                    User Management
-                                </Link>
-                            </li>
+                            {!loggedInUser ? (
+                                <li className="nav-item">
+                                    <Link href="/users" className="nav-link fs-5 text-white">
+                                        {t('header.nav.login')}
+                                    </Link>
+                                </li>
+                            ) : (
+                                <>
+                                    <li className="nav-item">
+                                        <a
+                                            href="/users"
+                                            onClick={handleLogout}
+                                            className="nav-link fs-5 text-white"
+                                        >
+                                            {t('header.nav.logout')}
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <span className="nav-link fs-5 text-white">
+                                            {t('header.welcome')}, {loggedInUser}!
+                                        </span>
+                                    </li>
+                                </>
+                            )}
                         </ul>
                         {/* Language Selector */}
                         <div className="d-flex align-items-center">

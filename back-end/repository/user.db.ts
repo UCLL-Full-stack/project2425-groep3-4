@@ -38,17 +38,17 @@ const getUserByUserName = async({username}: {username: string}) => {
     }
 }
 
-const getUsersByUserName = async({username}: {username: string}): Promise<User[]> => {
-    try {
-        const userPrisma = await database.user.findMany({
-            where: { username }
-        });
-        return userPrisma.map((users) => User.from(users));
-    } catch (error) {
-        console.log(error);
-        throw new Error("Database Error. See server log for details.");
-    }
-}
+// const getUsersByUserName = async({username}: {username: string}): Promise<User[]> => {
+//     try {
+//         const userPrisma = await database.user.findMany({
+//             where: { username }
+//         });
+//         return userPrisma.map((users) => User.from(users));
+//     } catch (error) {
+//         console.log(error);
+//         throw new Error("Database Error. See server log for details.");
+//     }
+// }
 
 const createUser = async (user: User): Promise<User> => {
     try {
@@ -98,7 +98,7 @@ export default {
     getAllUser,
     getUserById,
     getUserByUserName,
-    getUsersByUserName,
+    // getUsersByUserName,
     createUser,
     updateUser,
     deleteUser

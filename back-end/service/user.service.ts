@@ -13,15 +13,18 @@ const getAllUser = async(): Promise<User[]> => {
     return user;
 }
 
-const getUser = async({ username, role }: {username: string, role: string}): Promise<User[]> => {
-    if(role === 'admin'){
+const getUser = async ({ username, role }: { username: string; role: string }): Promise<User[]> => {
+    if (role === 'admin') {
         return userDb.getAllUser();
-    } else if (role === 'user'){
-        return userDb.getUsersByUserName({ username });
+    } else if (role === 'user') {
+        const user = await userDb.getUserByUserName({ username });
+        if (!user) throw new Error(`Username: ${username} does not exist.`);
+        return [user];
     } else {
         throw new UnauthorizedError("credentials_required", { message: "Unauthorized for the resource." });
     }
-}
+};
+
 const getUserById = async(id: number): Promise<User | null> => {
     const user = await userDb.getUserById({id}); 
     if(!user) throw new Error(`User with id: ${id} does not exist.`);
@@ -45,14 +48,18 @@ const authenticate = async({username, password}: UserInput):Promise<Authenticati
     }
 }
 
-const createUser = async({
+const createUser = async ({
     username,
     email,
     password,
     role,
 }: UserInput): Promise<User> => {
-    const existingUser = await userDb.getUserByUserName({username});
-    if(!existingUser)throw new Error (`User with username: ${username} is already registered`);
+    const existingUser = await userDb.getUserByUserName({ username });
+    if (existingUser) {
+        const error = new Error(`User with username: ${username} is already registered`);
+        error.name = 'ConflictError';
+        throw error;
+    }
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = new User({
@@ -60,9 +67,10 @@ const createUser = async({
         email,
         password: hashedPassword,
         role,
-    })
+    });
     return await userDb.createUser(user);
-}
+};
+
 
 const updateUser = async (id: number, users: UserInput): Promise<User | null> => {
     const userU = await userDb.getUserById({id});
@@ -71,15 +79,14 @@ const updateUser = async (id: number, users: UserInput): Promise<User | null> =>
 
 }
 
-const deleteUser = async(id: number): Promise<null | void> => {
-    const userD = await userDb.getUserById({id});
+const deleteUser = async (id: number): Promise<null | void> => {
+    const userD = await userDb.getUserById({ id });
     if (!userD) {
-        throw new Error(`User with user id: ${userD} not found.`);
-    } else {
-        userDb.deleteUser(id);
+        throw new Error(`User with id: ${id} not found.`);
     }
+    await userDb.deleteUser(id);
+};
 
-}
 
 export default {
     getAllUser,
