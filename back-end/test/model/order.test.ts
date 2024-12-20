@@ -20,6 +20,7 @@ test('given: valid order values, when: order is created, then: order is initiali
         creationDate: new Date(),
         user: user,
         orderDetails: [],
+        products: [],
     };
 
     // when
@@ -49,6 +50,7 @@ test('given: invalid status, when: order is created, then: an error is thrown', 
         creationDate: new Date(),
         user: user,
         orderDetails: [],
+        products: [],
     };
 
     // when

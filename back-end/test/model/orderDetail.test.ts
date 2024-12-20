@@ -29,6 +29,7 @@ test('given: valid order detail values, when: order detail is created, then: it 
         creationDate: new Date(),
         user: user,
         orderDetails: [],
+        products: [],
     };
     const order = new Order(orderData);
 
@@ -76,6 +77,7 @@ test('given: invalid quantity, when: order detail is created, then: an error is 
         creationDate: new Date(),
         user: user,
         orderDetails: [],
+        products: [],
     };
     const order = new Order(orderData);
 
