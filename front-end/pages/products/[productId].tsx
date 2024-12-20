@@ -65,7 +65,7 @@ const ProductDetailPage: React.FC = () => {
             </Head>
             <Header />
             <main className="d-flex flex-column align-items-center">
-                <h1>Pruduct Detail</h1>
+                <h1>Product Detail</h1>
                 <section>
                     <ProductDetail product={product} />
                 </section>
