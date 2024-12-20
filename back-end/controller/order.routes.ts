@@ -101,7 +101,6 @@ router.post('/', async (req, res) => {
             orderDetail: productDetails.map(({ productId, quantity }) => ({
                 productId,
                 quantity,
-                orderId: 0, 
             })),
         });
 

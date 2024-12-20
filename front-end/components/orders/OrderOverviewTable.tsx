@@ -65,9 +65,10 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
     const updateProductDetail = (index: number, key: 'productId' | 'quantity', value: number) => {
         setNewOrder((prev) => ({
             ...prev,
-            productDetails: prev?.productDetails?.map((detail, i) =>
-                i === index ? { ...detail, [key]: value } : detail
-            ) || [],
+            productDetails:
+                prev?.productDetails?.map((detail, i) =>
+                    i === index ? { ...detail, [key]: value } : detail
+                ) || [],
         }));
     };
 
@@ -117,7 +118,11 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
                                         placeholder="Product ID"
                                         value={detail.productId}
                                         onChange={(e) =>
-                                            updateProductDetail(index, 'productId', parseInt(e.target.value))
+                                            updateProductDetail(
+                                                index,
+                                                'productId',
+                                                parseInt(e.target.value)
+                                            )
                                         }
                                     />
                                     <input
@@ -127,7 +132,11 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
                                         placeholder="Quantity"
                                         value={detail.quantity}
                                         onChange={(e) =>
-                                            updateProductDetail(index, 'quantity', parseInt(e.target.value))
+                                            updateProductDetail(
+                                                index,
+                                                'quantity',
+                                                parseInt(e.target.value)
+                                            )
                                         }
                                     />
                                     <button
@@ -138,7 +147,10 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
                                     </button>
                                 </div>
                             ))}
-                            <button className="btn btn-secondary btn-sm mt-2" onClick={addProductDetail}>
+                            <button
+                                className="btn btn-secondary btn-sm mt-2"
+                                onClick={addProductDetail}
+                            >
                                 + Add Product
                             </button>
                         </td>
@@ -165,20 +177,23 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
                         </td>
                     </tr>
 
-                    {orders.map((order) => (
-                        <tr key={order.orderId}>
-                            <td>{order.orderId}</td>
-                            <td>{order.user.username}</td>
-                            <td>
-                                {order.products && order.products.length > 0
-                                    ? order.products.map((product) => product.name).join(', ')
-                                    : 'No products'}
-                            </td>
-                            <td>{order.status}</td>
-                            <td>{new Date(order.creationDate).toLocaleDateString()}</td>
-                            <td>--</td>
-                        </tr>
-                    ))}
+                    {orders.map((order) => {
+                        console.log(order);
+                        return (
+                            <tr key={order.id}>
+                                <td>{order.id}</td>
+                                <td>{order.user.username}</td>
+                                <td>
+                                    {order.products && order.products.length > 0
+                                        ? order.products.map((product) => product.name).join(', ')
+                                        : 'No products'}
+                                </td>
+                                <td>{order.status}</td>
+                                <td>{new Date(order.creationDate).toLocaleDateString()}</td>
+                                <td>--</td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>

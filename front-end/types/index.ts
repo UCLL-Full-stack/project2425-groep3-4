@@ -34,7 +34,7 @@ export type User = {
   };
   
   export type Order = {
-    orderId: number;
+    id: number;
     userId: number;
     user: User;
     products?: Product[];

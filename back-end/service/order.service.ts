@@ -37,6 +37,7 @@ const createOrder = async ({
         status,
         creationDate,
         orderDetails: [],
+        products: [],
     });
 
     const createdOrder = await orderDb.createOrder(order);

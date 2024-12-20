@@ -1,7 +1,8 @@
 import {
     Order as OrderPrisma,
     User as UserPrisma,
-    OrderDetail as OrderDetailPrisma
+    OrderDetail as OrderDetailPrisma,
+    Product as ProductPrisma
 } from '@prisma/client'
 
 import { OrderDetail } from './orderDetail';
@@ -15,6 +16,7 @@ export class Order {
     private status: Status;
     private creationDate: Date;
     private orderDetails: OrderDetail[];
+    private products: Product[];  
 
     constructor(order: {
         id?: number;
@@ -22,6 +24,7 @@ export class Order {
         status: Status;
         creationDate: Date;
         orderDetails: OrderDetail[];
+        products: Product[];  
     }) {
         this.validate(order);
         
@@ -30,7 +33,8 @@ export class Order {
         this.status = order.status;
         this.creationDate = order.creationDate;
         this.orderDetails = order.orderDetails;
-    } 
+        this.products = order.products;  
+    }
 
     getId(): number | undefined {
         return this.id;
@@ -50,6 +54,10 @@ export class Order {
 
     getOrderDetails(): OrderDetail[] {
         return this.orderDetails;
+    }
+
+    getProducts(): Product[] {
+        return this.products; 
     }
 
     validate(order: {
@@ -76,20 +84,31 @@ export class Order {
         );
     };
 
-
     static from({
         id,
         user,
         status,
         creationDate,
         orderDetails,
-    }: OrderPrisma & {user: UserPrisma, orderDetails: OrderDetailPrisma[]}) {
-        return new Order ({
+    }: OrderPrisma & {
+        user: UserPrisma,
+        orderDetails: (OrderDetailPrisma & { product?: ProductPrisma })[]
+    }) {
+        console.log('Mapping Order with ID:', id);  
+
+        const products = orderDetails
+            .map(orderDetail => orderDetail.product)
+            .filter((product): product is ProductPrisma => product !== undefined)  
+            .map(product => new Product(product));
+    
+        return new Order({
             id,
             user: User.from(user),
             status: status as Status,
             creationDate,
             orderDetails: orderDetails.map((orderDetail) => OrderDetail.from(orderDetail)),
+            products,
         });
-    };
+    }
+    
 }

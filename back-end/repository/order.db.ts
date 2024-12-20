@@ -11,7 +11,11 @@ const getAllOrders = async():Promise<Order[]> => {
         const orderPrisma = await database.order.findMany({
             include: {
                 user: true,
-                orderDetails: true
+                orderDetails: {
+                    include: {
+                        product: true, 
+                    },
+                },
             },
         });
         return orderPrisma.map((orderPrisma) => Order.from(orderPrisma));      
@@ -43,7 +47,11 @@ const getOrderOfUser = async({id}: {id: number}): Promise<Order[]> => {
             where: {userId: id},
             include: { 
                 user: true,
-                orderDetails: true
+                orderDetails: {
+                    include: {
+                        product: true, 
+                    },
+                },
             }
         })
         return orderPrisma.map((orderPrisma) => Order.from(orderPrisma));

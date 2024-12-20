@@ -1,4 +1,7 @@
-import { OrderDetail as OrderDetailPrisma, Product as ProductPrisma } from '@prisma/client';
+import { OrderDetail as OrderDetailPrisma, Product as ProductPrisma, User as UserPrisma, Order as OrderPrisma } from '@prisma/client';
+import { Role, Status } from '../types'; 
+import { User } from './user'; 
+import { Order } from './order'; 
 
 export class OrderDetail {
     private id?: number;
@@ -62,13 +65,14 @@ export class OrderDetail {
         id,
         orderId,
         productId,
-        quantity
-    }: OrderDetailPrisma) {
+        quantity,
+        product,  
+    }: OrderDetailPrisma & { product?: ProductPrisma }) {
         return new OrderDetail({
             id,
             orderId,
             productId,
-            quantity
+            quantity,
         });
     }
 }
