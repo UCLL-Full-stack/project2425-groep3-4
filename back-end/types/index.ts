@@ -1,5 +1,5 @@
 type Role = 'admin' | 'employee' | 'manager' | 'user';
-type Status = 'recieved' | 'processing' |'packing' |'shipping' | 'delivered';
+type Status = 'recieved' | 'processing' |'packing' |'shipping' | 'delivered' ;
 
 type UserInput = {
     id?: number;

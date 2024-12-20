@@ -1,67 +1,111 @@
-import { ProductService } from '../../service/product.service';
+import productService from '../../service/product.service';
+import productDb from '../../repository/product.db';
 import { Product } from '../../model/product';
-import { ProductRepository } from '../../repository/memoryRepository/product.db';
 
-jest.mock('../../repository/memoryRepository/product.db');
 
-describe('ProductService', () => {
-    let productService: ProductService;
+jest.mock('../../repository/product.db');
 
-    beforeEach(() => {
-        productService = new ProductService();
+const mockProductDb = jest.mocked(productDb);
+
+describe('Product Service', () => {
+    const sampleProduct = new Product({
+        name: 'Sample Product',
+        description: 'A sample product for testing',
+        location: 'Aisle 1',
     });
 
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    test('given a product, when added to the service, then product is returned', async () => {
-        // given
-        const product = new Product(1, 'Product A', 'Description of Product A', 'Location A1');
-        const addProductMock = jest.spyOn(ProductRepository.prototype, 'addProduct').mockResolvedValue(product);
+    test('getAllProducts should return all products', async () => {
+        // Arrange
+        mockProductDb.getAllProducts.mockResolvedValue([sampleProduct]);
 
-        // when
-        const result = await productService.addProduct(product);
+        // Act
+        const products = await productService.getAllProducts();
 
-        // then
-        expect(result).toBe(product);
-        expect(addProductMock).toHaveBeenCalledWith(product);
+        // Assert
+        expect(products).toEqual([sampleProduct]);
+        expect(mockProductDb.getAllProducts).toHaveBeenCalledTimes(1);
     });
 
-    test('given a productId, when getProductById is called, then the correct product is returned', async () => {
-        // given
-        const product = new Product(1, 'Product A', 'Description of Product A', 'Location A1');
-        jest.spyOn(ProductRepository.prototype, 'getProductById').mockResolvedValue(product);
+    test('getProductById should return the product if it exists', async () => {
+        // Arrange
+        mockProductDb.getProductById.mockResolvedValue(sampleProduct);
 
-        // when
-        const result = await productService.getProductById(1);
+        // Act
+        const product = await productService.getProductById(1);
 
-        // then
-        expect(result).toBe(product);
+        // Assert
+        expect(product).toEqual(sampleProduct);
+        expect(mockProductDb.getProductById).toHaveBeenCalledWith({ id: 1 });
     });
 
-    test('given a product, when updated, then product is returned with updated values', async () => {
-        // given
-        const product = new Product(1, 'Product A', 'Description', 'Location A1');
-        const updatedProduct = { name: 'Updated Product A', location: 'Shelf B2' };
-        jest.spyOn(ProductRepository.prototype, 'updateProduct').mockResolvedValue(new Product(1, 'Updated Product A', 'Description', 'Shelf B2'));
+    test('getProductById should throw an error if the product does not exist', async () => {
+        // Arrange
+        mockProductDb.getProductById.mockResolvedValue(null);
 
-        // when
-        const result = await productService.updateProduct(1, updatedProduct);
-
-        // then
-        expect(result?.getName()).toBe('Updated Product A');
-        expect(result?.getLocation()).toBe('Shelf B2');
+        // Act & Assert
+        await expect(productService.getProductById(1)).rejects.toThrow('No products with id: 1');
+        expect(mockProductDb.getProductById).toHaveBeenCalledWith({ id: 1 });
     });
 
-    test('given a productId, when deleteProduct is called, then true is returned', async () => {
-        // given
-        jest.spyOn(ProductRepository.prototype, 'deleteProduct').mockResolvedValue(true);
+    test('createProduct should create a new product', async () => {
+        // Arrange
+        mockProductDb.createProduct.mockResolvedValue(sampleProduct);
 
-        // when
-        const result = await productService.deleteProduct(1);
+        // Act
+        const product = await productService.createProduct({
+            name: 'Sample Product',
+            description: 'A sample product for testing',
+            location: 'Aisle 1',
+        });
 
-        // then
-        expect(result).toBe(true);
+        // Assert
+        expect(product).toEqual(sampleProduct);
+        expect(mockProductDb.createProduct).toHaveBeenCalledWith(sampleProduct);
+    });
+
+    test('deleteProduct should delete the product if it exists', async () => {
+        // Arrange
+        mockProductDb.deleteProduct.mockResolvedValue(sampleProduct);
+
+        // Act
+        const product = await productService.deleteProduct(1);
+
+        // Assert
+        expect(product).toEqual(sampleProduct);
+        expect(mockProductDb.deleteProduct).toHaveBeenCalledWith(1);
+    });
+
+    test('deleteProduct should throw an error if the product could not be deleted', async () => {
+        // Arrange
+        mockProductDb.deleteProduct.mockResolvedValue(null);
+
+        // Act & Assert
+        await expect(productService.deleteProduct(1)).rejects.toThrow('Product could not be deleted');
+        expect(mockProductDb.deleteProduct).toHaveBeenCalledWith(1);
+    });
+
+    test('updateProduct should update the product if it exists', async () => {
+        // Arrange
+        mockProductDb.updateProduct.mockResolvedValue(sampleProduct);
+
+        // Act
+        const updatedProduct = await productService.updateProduct(sampleProduct);
+
+        // Assert
+        expect(updatedProduct).toEqual(sampleProduct);
+        expect(mockProductDb.updateProduct).toHaveBeenCalledWith(sampleProduct);
+    });
+
+    test('updateProduct should throw an error if the product could not be updated', async () => {
+        // Arrange
+        mockProductDb.updateProduct.mockResolvedValue(null);
+
+        // Act & Assert
+        await expect(productService.updateProduct(sampleProduct)).rejects.toThrow('Product could not be deleted');
+        expect(mockProductDb.updateProduct).toHaveBeenCalledWith(sampleProduct);
     });
 });

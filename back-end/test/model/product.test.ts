@@ -1,51 +1,36 @@
 import { Product } from '../../model/product';
 
-test('given valid values for product, when product is created, then product is created with those values', () => {
+test('given: valid product values, when: product is created, then: product is initialized correctly', () => {
     // given
-    const productId = 1;
-    const name = 'Product A';
-    const description = 'Description of Product A';
-    const location = 'Location A1';
+    const productData = {
+        id: 1,
+        name: 'Test Product',
+        description: 'A product for testing',
+        location: 'Warehouse A',
+    };
 
     // when
-    const product = new Product(productId, name, description, location);
+    const product = new Product(productData);
 
     // then
-    expect(product.getProductId()).toBe(productId);
-    expect(product.getName()).toBe(name);
-    expect(product.getDescription()).toBe(description);
-    expect(product.getLocation()).toBe(location);
+    expect(product.getId()).toEqual(productData.id);
+    expect(product.getName()).toEqual(productData.name);
+    expect(product.getDescription()).toEqual(productData.description);
+    expect(product.getLocation()).toEqual(productData.location);
 });
 
-test('given a product, when name is updated, then product has the new name', () => {
+test('given: empty name, when: product is created, then: an error is thrown', () => {
     // given
-    const product = new Product(1, 'Old Product Name', 'Description', 'Location A1');
+    const productData = {
+        id: 1,
+        name: '',
+        description: 'A product for testing',
+        location: 'Warehouse A',
+    };
 
     // when
-    product.setName('New Product Name');
+    const createProduct = () => new Product(productData);
 
     // then
-    expect(product.getName()).toBe('New Product Name');
-});
-
-test('given a product, when description is updated, then product has the new description', () => {
-    // given
-    const product = new Product(1, 'Product A', 'Old Description', 'Location A1');
-
-    // when
-    product.setDescription('New Description');
-
-    // then
-    expect(product.getDescription()).toBe('New Description');
-});
-
-test('given a product, when location is updated, then product has the new location', () => {
-    // given
-    const product = new Product(1, 'Product A', 'Description', 'Old Location');
-
-    // when
-    product.setLocation('New Location');
-
-    // then
-    expect(product.getLocation()).toBe('New Location');
+    expect(createProduct).toThrow('Name is required');
 });
