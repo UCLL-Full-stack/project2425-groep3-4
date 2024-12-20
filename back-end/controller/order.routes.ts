@@ -146,9 +146,13 @@ router.post('/orders', async (req, res) => {
  *       200:
  *         description: List of all orders
  */
-router.get('/orders', async (req, res) => {
-    const orders = await orderService.getAllOrders();
-    res.json(orders);
+router.get('/', async (req, res) => {
+    try {
+        const orders = await orderService.getAllOrders();
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving orders', error: error });
+    }
 });
 
 /**

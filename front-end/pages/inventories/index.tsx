@@ -5,6 +5,9 @@ import InventoryOverviewTable from '@components/inventories/InventoryOverviewTab
 
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { InventoryService } from '@services/InventoryService';
+import { Inventory } from '@types';
+import { useState, useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
     const translations = await serverSideTranslations(locale ?? 'en', ['common']);
@@ -14,7 +17,31 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
         },
     };
 };
+
 const Home: React.FC = () => {
+    const [inventories, setInventories] = useState<Inventory[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const inventoryService = new InventoryService();
+
+    useEffect(() => {
+        const fetchInventories = async () => {
+            try {
+                setLoading(true);
+                const data = await inventoryService.getAllInventories();
+                setInventories(data);
+            } catch (err) {
+                setError('Failed to load inventories');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchInventories();
+    }, []);
+
     return (
         <>
             <Head>
@@ -27,7 +54,11 @@ const Home: React.FC = () => {
             <main className="d-flex flex-column align-items-center">
                 <h1>Inventory</h1>
                 <section>
-                    <InventoryOverviewTable />
+                    <InventoryOverviewTable
+                        inventories={inventories}
+                        loading={loading}
+                        error={error}
+                    />
                 </section>
             </main>
             <Footer />

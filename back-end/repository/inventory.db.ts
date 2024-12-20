@@ -35,10 +35,17 @@ const createInventory = async (inventory: Inventory): Promise<Inventory> => {
 };
 
 const deleteInventory = async (id: number): Promise<Inventory> => {
+    await database.inventoryDetail.deleteMany({
+        where: {
+            inventoryId: id,
+        },
+    });
+
     const inventoryPrisma = await database.inventory.delete({
         where: { id },
         include: { details: true },
     });
+
     return Inventory.from(inventoryPrisma);
 };
 

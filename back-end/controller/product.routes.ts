@@ -61,15 +61,15 @@ router.post('/products', async (req, res) => {
  *       200:
  *         description: List of all products
  */
-router.get('/products', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const products = await productService.getAllProducts();
-        res.json(products);
+        res.status(200).json(products);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Error retrieving products', error: error });
     }
 });
-
 /**
  * @swagger
  * /api/products/{id}:

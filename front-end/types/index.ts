@@ -18,6 +18,8 @@ export type User = {
   };
   
   export type Inventory = {
+    id : number;
+    inventoryId: number;
     productId: number;
     product: Product;
     quantity: number;
