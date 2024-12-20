@@ -19,7 +19,7 @@ const router = express.Router();
  *   description: Order management API
  */
 
-/**
+/** 
  * @swagger
  * /api/orders:
  *   post:
@@ -32,14 +32,17 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               orderId:
- *                 type: integer
  *               userId:
  *                 type: integer
- *               productIds:
+ *               productDetails:
  *                 type: array
  *                 items:
- *                   type: integer
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
  *               status:
  *                 type: string
  *                 enum: [received, processing, packing, shipping, delivered]
@@ -47,9 +50,11 @@ const router = express.Router();
  *                 type: string
  *                 format: date-time
  *           example:
- *             orderId: 1
  *             userId: 1
- *             productIds: [9, 10]
+ *             productDetails: [
+ *               { "productId": 1, "quantity": 2 },
+ *               { "productId": 2, "quantity": 3 }
+ *             ]
  *             status: "received"
  *             creationDate: "2024-12-10T20:52:22.843Z"
  *     responses:
@@ -62,17 +67,15 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.post('/orders', async (req, res) => {
-    const { orderId, userId, productDetails, status, creationDate } = req.body;
+
+router.post('/', async (req, res) => {
+    const { userId, productDetails, status, creationDate } = req.body;
 
     if (
-        !orderId ||
         !userId ||
         !productDetails ||
         !Array.isArray(productDetails) ||
-        productDetails.some(
-            (detail) => !detail.productId || !detail.quantity || detail.quantity <= 0
-        ) ||
+        productDetails.some((detail) => !detail.productId || !detail.quantity || detail.quantity <= 0) ||
         !status ||
         !creationDate
     ) {
@@ -85,31 +88,7 @@ router.post('/orders', async (req, res) => {
             return res.status(404).json({ message: `User with id ${userId} not found` });
         }
 
-        const orderDetails = await Promise.all(
-            productDetails.map(async ({ productId, quantity }: { productId: number; quantity: number }) => {
-                const product = await productService.getProductById(productId);
-                if (!product) {
-                    throw new Error(`Product with id ${productId} not found`);
-                }
-
-                return new OrderDetail({
-                    orderId,
-                    productId,
-                    quantity,
-                });
-            })
-        );
-
-        const order = new Order({
-            id: orderId,
-            user,
-            status,
-            creationDate: new Date(creationDate),
-            orderDetails: orderDetails,
-        });
-
         const createdOrder = await orderService.createOrder({
-            id: order.getId(),
             user: {
                 id: user.getId(),
                 username: user.getUsername(),
@@ -117,13 +96,12 @@ router.post('/orders', async (req, res) => {
                 email: user.getEmail(),
                 role: user.getRole(),
             },
-            status: order.getStatus(),
-            creationDate: order.getCreationDate(),
-            orderDetail: order.getOrderDetails().map((detail) => ({
-                id: detail.getId(),
-                orderId: detail.getOrderId(),
-                productId: detail.getProductId(),
-                quantity: detail.getQuantity(),
+            status,
+            creationDate: new Date(creationDate),
+            orderDetail: productDetails.map(({ productId, quantity }) => ({
+                productId,
+                quantity,
+                orderId: 0, 
             })),
         });
 
@@ -133,7 +111,6 @@ router.post('/orders', async (req, res) => {
         res.status(500).json({ message: 'An error occurred while creating the order.' });
     }
 });
-
 
 
 /**
@@ -174,7 +151,7 @@ router.get('/', async (req, res) => {
  *       404:
  *         description: Order not found
  */
-router.get('/orders/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     const order = await orderService.getOrderById({id});
 

@@ -5,18 +5,31 @@ export class InventoryDetail {
     private inventoryId?: number;
     private productId: number;
     private quantity: number;
+    private product?: {
+        id: number;
+        name: string;
+        description: string;
+        location: string;
+    };
 
     constructor(inventoryDetail: {
         id?: number;
         inventoryId?: number;
         productId: number;
         quantity: number;
+        product?: {
+            id: number;
+            name: string;
+            description: string;
+            location: string;
+        };
     }) {
         this.validate(inventoryDetail);
         this.id = inventoryDetail.id;
         this.inventoryId = inventoryDetail.inventoryId;
         this.productId = inventoryDetail.productId;
         this.quantity = inventoryDetail.quantity;
+        this.product = inventoryDetail.product;
     }
 
     getId(): number | undefined {
@@ -35,10 +48,20 @@ export class InventoryDetail {
         return this.quantity;
     }
 
+    getProduct(): { id: number; name: string; description: string; location: string } | undefined {
+        return this.product;
+    }
+
     validate(inventoryDetail: {
         inventoryId?: number;
         productId: number;
         quantity: number;
+        product?: {
+            id: number;
+            name: string;
+            description: string;
+            location: string;
+        };
     }) {
         if (!inventoryDetail.productId) {
             throw new Error('Product ID is required');
@@ -53,12 +76,21 @@ export class InventoryDetail {
         inventoryId,
         productId,
         quantity,
-    }: InventoryDetailPrisma): InventoryDetail {
+        product,
+    }: InventoryDetailPrisma & { product?: ProductPrisma }): InventoryDetail {
+        console.log('Mapping InventoryDetail.from:', { id, inventoryId, productId, quantity, product });
         return new InventoryDetail({
             id,
             inventoryId,
             productId,
             quantity,
+            product: product? {
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                location: product.location,
+            }: undefined,
         });
     }
+    
 }

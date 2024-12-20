@@ -23,22 +23,21 @@ const Home: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const inventoryService = new InventoryService();
+    const fetchInventories = async () => {
+        try {
+            setLoading(true);
+            const data = await new InventoryService().getAllInventories();
+            console.log('Fetched inventories:', data);
+            setInventories(data);
+        } catch (err) {
+            setError('Failed to load inventories');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchInventories = async () => {
-            try {
-                setLoading(true);
-                const data = await inventoryService.getAllInventories();
-                setInventories(data);
-            } catch (err) {
-                setError('Failed to load inventories');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchInventories();
     }, []);
 
@@ -56,8 +55,7 @@ const Home: React.FC = () => {
                 <section>
                     <InventoryOverviewTable
                         inventories={inventories}
-                        loading={loading}
-                        error={error}
+                        onInventoryChange={fetchInventories}
                     />
                 </section>
             </main>

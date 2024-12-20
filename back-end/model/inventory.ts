@@ -1,4 +1,4 @@
-import { Inventory as InventoryPrisma, InventoryDetail as InventoryDetailPrisma } from '@prisma/client';
+import { Inventory as InventoryPrisma, InventoryDetail as InventoryDetailPrisma, Product as ProductPrisma } from '@prisma/client';
 import { InventoryDetail } from './inventoryDetail';
 
 export class Inventory {
@@ -24,17 +24,22 @@ export class Inventory {
 
     validate(inventory: { details: InventoryDetail[] }) {
         if (!inventory.details || inventory.details.length === 0) {
+            console.error('Validation failed: Inventory must have at least one detail.');
             throw new Error('Inventory must have at least one detail');
         }
+        console.log('Validation passed:', inventory.details);
     }
 
     static from({
         id,
         details,
-    }: InventoryPrisma & { details: InventoryDetailPrisma[] }): Inventory {
+    }: InventoryPrisma & { details: (InventoryDetailPrisma & { product?: ProductPrisma })[] }): Inventory {
+        console.log('Mapping Inventory.from:', { id, details });
         return new Inventory({
             id,
             details: details.map((detail) => InventoryDetail.from(detail)),
         });
     }
+    
 }
+

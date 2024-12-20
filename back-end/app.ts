@@ -54,6 +54,7 @@ app.use(
             '/users/login',
             /^\/api\/products\/?.*/,
             /^\/api\/orders\/?.*/,
+            /^\/api\/ordersDetails\/?.*/,
             /^\/api\/inventory\/?.*/
         ]
     })
@@ -62,7 +63,7 @@ app.use(
 // Route loading
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/order-details', orderDetailRoutes);
+app.use('/api/orderDetails', orderDetailRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 

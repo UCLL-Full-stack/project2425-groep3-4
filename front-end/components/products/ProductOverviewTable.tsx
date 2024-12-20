@@ -44,9 +44,9 @@ const ProductOverviewTable: React.FC<Props> = ({ products: initialProducts }: Pr
             setLoading(true);
             await ProductService.deleteProduct(id); 
             setProducts(products.filter((product) => product.id !== id));
-        } catch (err) {
-            setError('Failed to delete product');
-            console.error(err);
+        } catch (error) {
+            setError('Failed to delete product: ' + error);
+            console.error('Failed to delete product: ' + error);
         } finally {
             setLoading(false);
         }

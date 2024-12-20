@@ -2,9 +2,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export class OrderService {
     public async createOrder(order: {
-        orderId: number;
         userId: number;
-        productIds: number[];
+        productDetails: { productId: number; quantity: number }[];
         status: string;
         creationDate: string;
     }): Promise<any> {
@@ -19,13 +18,13 @@ export class OrderService {
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (error) {
             console.error('Failed to create order:', error);
             throw error;
         }
     }
+    
 
     public async getAllOrders(): Promise<any> {
         try {

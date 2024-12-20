@@ -77,17 +77,30 @@ const updateProduct = async (product: Product): Promise<Product | null> => {
 };
 
 
-const deleteProduct = async(id: number): Promise<Product | null> => {
+const deleteProduct = async (id: number): Promise<Product | null> => {
     try {
+        await database.orderDetail.deleteMany({
+            where: {
+                productId: id,
+            },
+        });
+
+        await database.inventoryDetail.deleteMany({
+            where: {
+                productId: id,
+            },
+        });
+
         const productPrisma = await database.product.delete({
-            where: { id }
-        })
-        return productPrisma ? Product.from(productPrisma): null;
+            where: { id },
+        });
+
+        return productPrisma ? Product.from(productPrisma) : null;
     } catch (error) {
-        console.log(error);
-        throw new Error("Database Error. See server log for details.");
+        console.error('Error deleting product:', error);
+        throw new Error('Database Error. See server log for details.');
     }
-}
+};
 
 export default{
     getAllProducts,

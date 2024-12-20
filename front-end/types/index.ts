@@ -18,11 +18,19 @@ export type User = {
   };
   
   export type Inventory = {
-    id : number;
-    inventoryId: number;
-    productId: number;
-    product: Product;
-    quantity: number;
+    id: number;
+    details: Array<{
+        id: number;
+        inventoryId: number;
+        productId: number;
+        quantity: number;
+        product: {
+            id: number;
+            name: string;
+            description: string;
+            location: string;
+        };
+    }>;
   };
   
   export type Order = {
@@ -30,11 +38,13 @@ export type User = {
     userId: number;
     user: User;
     products?: Product[];
+    productDetails: { productId: number; quantity: number }[];
     status: string;
     creationDate: Date;
     orderDetails?: OrderDetail[];
     shipments?: Shipment[];
   };
+
   
   export type OrderDetail = {
     orderDetailId: number;

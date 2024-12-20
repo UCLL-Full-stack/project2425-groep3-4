@@ -11,8 +11,28 @@ const getOrderDetailsByOrderId = async({id}: {id: number}): Promise<OrderDetail 
     return orderDetail;
 }
 
+const addOrderDetails = async (orderId: number, details: Array<{ productId: number; quantity: number }>): Promise<OrderDetail[]> => {
+    try {
+        const createdDetails = await Promise.all(
+            details.map(async (detail) => {
+                const orderDetail = new OrderDetail({
+                    orderId,
+                    productId: detail.productId,
+                    quantity: detail.quantity,
+                });
+                return await orderDetailDb.addOrderDetail(orderDetail);
+            })
+        );
+        return createdDetails;
+    } catch (error) {
+        console.error('Error adding order details:', error);
+        throw new Error('Failed to add order details. See server log for details.');
+    }
+};
+
 export default {
     getOrderDetailsByOrderId,
+    addOrderDetails
 }
 
 

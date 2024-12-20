@@ -138,12 +138,15 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const inventoryInput: InventoryInput = req.body;
+        console.log('Received inventory input:', inventoryInput);
         const newInventory = await inventoryService.createInventory(inventoryInput);
         res.status(201).json(newInventory);
     } catch (error) {
+        console.error('[ERROR]', error);
         next(error);
     }
 });
+
 
 /**
  * @swagger
@@ -168,17 +171,18 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
  *       404:
  *         description: Inventory not found
  */
-router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:id', async (req, res) => {
     try {
-        const id = parseInt(req.params.id, 10);
+        const id = parseInt(req.params.id);
         if (isNaN(id)) {
-            return res.status(400).json({ message: 'Invalid Inventory ID' });
+            return res.status(400).json({ message: 'Invalid inventory ID' });
         }
 
-        const deletedInventory = await inventoryService.deleteInventory(id);
-        res.status(200).json(deletedInventory);
+        await inventoryService.deleteInventory(id);
+        res.status(200).json({ message: 'Inventory deleted successfully' });
     } catch (error) {
-        next(error);
+        console.error('Error deleting inventory:', error);
+        res.status(500).json({ message: 'An error occurred while deleting the inventory.' });
     }
 });
 

@@ -53,32 +53,31 @@ const getOrderOfUser = async({id}: {id: number}): Promise<Order[]> => {
     }
 }
 
-const createOrder = async(order: Order): Promise<Order> => {
+const createOrder = async (order: Order): Promise<Order> => {
     try {
         const orderPrisma = await database.order.create({
             data: {
                 status: order.getStatus(),
                 creationDate: order.getCreationDate(),
                 user: {
-                    create: {
-                        username: order.getUser().getUsername(),
-                        password: order.getUser().getPassword(),
-                        email: order.getUser().getEmail(),
-                        role: order.getUser().getRole()
-                    },
+                    connect: { id: order.getUser().getId() },
                 },
                 orderDetails: {
-                    connect: order.getOrderDetails().map((ord) => ({id: ord.getId()}))
-                }
+                    create: order.getOrderDetails().map((ord) => ({
+                        productId: ord.getProductId(),
+                        quantity: ord.getQuantity(),
+                    })),
+                },
             },
-            include: { user: true, orderDetails: true }
+            include: { user: true, orderDetails: true },
         });
         return Order.from(orderPrisma);
     } catch (error) {
-        console.log(error);
-        throw new Error('Database error. See server log for details.')
+        console.error(error);
+        throw new Error('Database error. See server log for details.');
     }
-}
+};
+
 
 /*
 const updateOrder = async(id: number, order: Order): Promise<Order> => {

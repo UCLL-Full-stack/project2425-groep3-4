@@ -26,12 +26,12 @@ const createInventory = async (inventoryInput: InventoryInput): Promise<Inventor
     return await inventoryDb.createInventory(inventory);
 };
 
-const deleteInventory = async (id: number): Promise<Inventory> => {
+const deleteInventory = async (id: number): Promise<void> => {
     const inventory = await inventoryDb.getInventoryById(id);
     if (!inventory) {
         throw new Error(`Inventory with ID ${id} not found`);
     }
-    return await inventoryDb.deleteInventory(id);
+    await inventoryDb.deleteInventory(id);
 };
 
 export default {

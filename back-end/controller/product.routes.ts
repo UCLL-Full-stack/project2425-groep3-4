@@ -36,7 +36,7 @@ const router = express.Router();
  *       400:
  *         description: Invalid input
  */
-router.post('/products', async (req, res) => {
+router.post('/', async (req, res) => {
     const { name, description, location } = req.body;
 
     if (!name || !description || !location) {
@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
  *       404:
  *         description: Product not found
  */
-router.get('/products/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = parseInt(req.params.id);
 
     try {
@@ -137,7 +137,7 @@ router.get('/products/:id', async (req, res) => {
  *         description: Product not found
  */
 
-router.patch('/products/:id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
     const { id } = req.params; 
     const { name, description, location } = req.body;
 
@@ -179,7 +179,7 @@ router.patch('/products/:id', async (req, res) => {
  *       404:
  *         description: Product not found
  */
-router.delete('/products/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const id = parseInt(req.params.id);
 
     try {

@@ -8,7 +8,7 @@ type Props = {
 
 type NewOrder = {
     userId: number;
-    productIds: number[];
+    productDetails: { productId: number; quantity: number }[];
     status: string;
 };
 
@@ -16,8 +16,8 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
     const [orders, setOrders] = useState<Order[]>(initialOrders);
     const [newOrder, setNewOrder] = useState<Partial<NewOrder>>({
         userId: 0,
-        productIds: [],
-        status: 'recieved',
+        productDetails: [],
+        status: 'received',
     });
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -26,21 +26,49 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
         try {
             setLoading(true);
             const orderService = new OrderService();
+
+            if (!newOrder.productDetails || newOrder.productDetails.length === 0) {
+                throw new Error('Product details are required');
+            }
+
             const addedOrder = await orderService.createOrder({
-                orderId: Date.now(), // Temporary unique ID
                 userId: newOrder.userId || 0,
-                productIds: newOrder.productIds || [],
-                status: newOrder.status || 'recieved',
+                productDetails: newOrder.productDetails,
+                status: newOrder.status || 'received',
                 creationDate: new Date().toISOString(),
             });
+
             setOrders([...orders, addedOrder]);
-            setNewOrder({ userId: 0, productIds: [], status: 'recieved' });
+            setNewOrder({ userId: 0, productDetails: [], status: 'received' });
         } catch (err) {
             setError('Failed to add order');
             console.error(err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const addProductDetail = () => {
+        setNewOrder((prev) => ({
+            ...prev,
+            productDetails: [...(prev?.productDetails || []), { productId: 0, quantity: 1 }],
+        }));
+    };
+
+    const removeProductDetail = (index: number) => {
+        setNewOrder((prev) => ({
+            ...prev,
+            productDetails: prev?.productDetails?.filter((_, i) => i !== index) || [],
+        }));
+    };
+
+    const updateProductDetail = (index: number, key: 'productId' | 'quantity', value: number) => {
+        setNewOrder((prev) => ({
+            ...prev,
+            productDetails: prev?.productDetails?.map((detail, i) =>
+                i === index ? { ...detail, [key]: value } : detail
+            ) || [],
+        }));
     };
 
     if (loading) {
@@ -80,18 +108,39 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
                             />
                         </td>
                         <td>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Product IDs (comma-separated)"
-                                value={newOrder.productIds?.join(',')}
-                                onChange={(e) =>
-                                    setNewOrder({
-                                        ...newOrder,
-                                        productIds: e.target.value.split(',').map(Number),
-                                    })
-                                }
-                            />
+                            {newOrder.productDetails?.map((detail, index) => (
+                                <div key={index} className="mb-2">
+                                    <input
+                                        type="number"
+                                        className="form-control d-inline-block me-2"
+                                        style={{ width: '45%' }}
+                                        placeholder="Product ID"
+                                        value={detail.productId}
+                                        onChange={(e) =>
+                                            updateProductDetail(index, 'productId', parseInt(e.target.value))
+                                        }
+                                    />
+                                    <input
+                                        type="number"
+                                        className="form-control d-inline-block me-2"
+                                        style={{ width: '30%' }}
+                                        placeholder="Quantity"
+                                        value={detail.quantity}
+                                        onChange={(e) =>
+                                            updateProductDetail(index, 'quantity', parseInt(e.target.value))
+                                        }
+                                    />
+                                    <button
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => removeProductDetail(index)}
+                                    >
+                                        -
+                                    </button>
+                                </div>
+                            ))}
+                            <button className="btn btn-secondary btn-sm mt-2" onClick={addProductDetail}>
+                                + Add Product
+                            </button>
                         </td>
                         <td>
                             <select
@@ -101,7 +150,7 @@ const OrderOverviewTable: React.FC<Props> = ({ orders: initialOrders }) => {
                                     setNewOrder({ ...newOrder, status: e.target.value })
                                 }
                             >
-                                <option value="recieved">Recieved</option>
+                                <option value="received">Received</option>
                                 <option value="processing">Processing</option>
                                 <option value="packing">Packing</option>
                                 <option value="shipping">Shipping</option>
